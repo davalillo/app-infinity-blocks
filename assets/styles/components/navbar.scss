@@ -1,0 +1,182 @@
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // navbar // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+#navbar {
+  animation: movedown .5s $ease-return;
+  transition: 0.4s ease-in-out;
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   inset: 0;
+  //   background: var(--clr-btn);
+  //   transition: 0.4s ease-in-out;
+  // }
+  // &.hide::before {opacity: 0}
+  .v-toolbar__content {
+    @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+    display: flex;
+    @include parent;
+    height: var(--h-navbar) !important;
+    background-color: var(--primary);
+    padding: 0 !important;
+    filter: drop-shadow(0px 8px 6px rgba(0 0 0 / .5));
+    border-radius: 0 0 1.25em 1.25em;
+
+    #navbar-toggle {
+      width: var(--h-navbar) !important;
+    }
+
+    .v-tabs {
+      --p: 0 !important;
+      --br: 0 !important;
+      min-width: 100% !important;
+      margin-inline: auto;
+      div[role="tablist"] {
+        height: 100%;
+        border-radius: 0 0 1.25em 1.25em !important;
+        overflow: hidden;
+      }
+      .v-tab {
+        font-size: clamp(1em, 1.5vw, 1.3em) !important;
+        font-weight: 600 !important;
+        padding-inline: 0.625em;
+        &:not(#navbar-toggle) {flex: 1 1}
+
+        &:not(:first-of-type) {
+          // lines
+          position: relative;
+          &::after {
+            content: "";
+            @include absolute(0,0,auto,0);
+            height: 70%;
+            width: 0.125em;
+            background-color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // menu navbar // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+#menu-navbar {
+  // @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+  .v-navigation-drawer.custome-drawer {
+    .v-navigation-drawer__content {
+      &--header {
+        padding-top: var(--h-navbar) !important;
+        
+        #navbar-toggle {
+          @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+          --size: var(--h-navbar);
+          
+          background-color: var(--active) !important;
+          width: var(--size) !important;
+          min-width: var(--size) !important;
+          min-height: var(--size) !important;
+          height: var(--size) !important;
+          border-radius: 0;
+          border-end-end-radius: 1.25em;
+          padding: 0 !important;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+
+      &--content {
+      }
+    }
+  }
+}
+
+.menu-toggle {
+  --w-menu-toggle: 23em;
+  --p-inline: 2em;
+  
+  width: var(--w-menu-toggle);
+  height: 100vh;
+  padding-inline: var(--p-inline);
+  padding-block: 30px;
+  @include media(min, small) {padding-block: 40px}
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary);
+  transform: translateY(-12px);
+  @include media(max, 904px) {transform: translate(-12px, -12px)}
+  background-image: url(../../sources/images/toggle-decoration.png);
+  background-position: bottom left;
+  background-size: 45%;
+  
+  // lines
+  > :first-child + * ~ * {
+    --spacing: 20px;
+    
+    margin-top: var(--spacing);
+    padding-top: var(--spacing);
+    position: relative;
+    width: 100%;
+    &::after {
+      content: "";
+      @include absolute(0,0,0);
+      width: 100%;
+      height: 1px;
+      background-color: var(--clr-line);
+    }
+  }
+  
+  // toggle button
+  &-btn#navbar-toggle {
+    --size: var(--h-navbar);
+    
+    font-size: var(--resizer);
+    @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+    background-color: var(--active) !important;
+    width: var(--size) !important;
+    min-width: var(--size) !important;
+    @include media(min, small) {
+      width: min(68.78px, 5em) !important;
+      min-width: min(68.78px, 5em) !important;
+    }
+    min-height: var(--size) !important;
+    height: var(--size) !important;
+    border-radius: 0;
+    border-end-end-radius: 1.25em;
+    padding: 0 !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  // logo
+  &-logo {
+    --w: 70% !important;
+  }
+
+  * {font-weight: 600 !important}
+
+  .clock {
+    --c: var(--active);
+    background-color: #fff !important;
+    padding: 12px 14px;
+    border-radius: 8px;
+    span {
+      font-weight: bold !important;
+      font-size: 20px;
+    }
+  }
+
+  .v-list {
+    &-item {
+      min-height: 40px;
+      &__title {z-index: 1}
+      &::before, &::after, .v-ripple__container, .v-ripple__container span {
+        min-width: calc(var(--w-menu-toggle) + (var(--p-inline) * 2)) !important;
+        margin-left: calc(var(--p-inline) * -1);
+      }
+    }
+  }
+}
+
