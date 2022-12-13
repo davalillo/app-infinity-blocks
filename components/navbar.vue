@@ -2,7 +2,7 @@
   <div>
     <MenuNavbar ref="menu"></MenuNavbar>
     
-    <v-app-bar id="navbar" color="transparent" absolute class="isolate">
+    <v-app-bar id="navbar" color="transparent" fixed class="isolate">
       <v-tabs v-model="currentTab" hide-slider style="--bg-active: var(--active); --c-active: #fff; --g: 0">
         <v-tab id="navbar-toggle" class="menu-toggle-activator">
           <v-icon size="2em" style="color: #fff !important">mdi-menu</v-icon>
