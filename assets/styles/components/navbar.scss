@@ -37,7 +37,9 @@
         overflow: hidden;
       }
       .v-tab {
-        font-size: clamp(1em, 1.5vw, 1.3em) !important;
+        font-size: 1.3em !important;
+        @include media(max, 500px) {font-size: 1em !important}
+        @include media(max, x-small) {font-size: max(10px, 1em) !important}
         font-weight: 600 !important;
         padding-inline: 0.625em;
         &:not(#navbar-toggle) {
