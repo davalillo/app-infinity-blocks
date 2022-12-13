@@ -40,9 +40,8 @@
         font-size: clamp(1em, 1.5vw, 1.3em) !important;
         font-weight: 600 !important;
         padding-inline: 0.625em;
-        &:not(#navbar-toggle) {flex: 1 1}
-
-        &:not(:first-of-type) {
+        &:not(#navbar-toggle) {
+          flex: 1 1;
           // lines
           position: relative;
           &::after {
@@ -61,36 +60,36 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 // // // menu navbar // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
-#menu-navbar {
-  // @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
-  .v-navigation-drawer.custome-drawer {
-    .v-navigation-drawer__content {
-      &--header {
-        padding-top: var(--h-navbar) !important;
+// #menu-navbar {
+//   // @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+//   .v-navigation-drawer.custome-drawer {
+//     .v-navigation-drawer__content {
+//       &--header {
+//         padding-top: var(--h-navbar) !important;
         
-        #navbar-toggle {
-          @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
-          --size: var(--h-navbar);
+//         #navbar-toggle {
+//           @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+//           --size: var(--h-navbar);
           
-          background-color: var(--active) !important;
-          width: var(--size) !important;
-          min-width: var(--size) !important;
-          min-height: var(--size) !important;
-          height: var(--size) !important;
-          border-radius: 0;
-          border-end-end-radius: 1.25em;
-          padding: 0 !important;
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-      }
+//           background-color: var(--active) !important;
+//           width: var(--size) !important;
+//           min-width: var(--size) !important;
+//           min-height: var(--size) !important;
+//           height: var(--size) !important;
+//           border-radius: 0;
+//           border-end-end-radius: 1.25em;
+//           padding: 0 !important;
+//           position: absolute;
+//           top: 0;
+//           left: 0;
+//         }
+//       }
 
-      &--content {
-      }
-    }
-  }
-}
+//       &--content {
+//       }
+//     }
+//   }
+// }
 
 .menu-toggle {
   --w-menu-toggle: 23em;
@@ -137,8 +136,8 @@
     width: var(--size) !important;
     min-width: var(--size) !important;
     @include media(min, small) {
-      width: min(68.78px, 5em) !important;
-      min-width: min(68.78px, 5em) !important;
+      width: min(83.19px, 5em) !important;
+      min-width: min(83.19px, 5em) !important;
     }
     min-height: var(--size) !important;
     height: var(--size) !important;
@@ -152,7 +151,8 @@
 
   // logo
   &-logo {
-    --w: 70% !important;
+    width: 70%;
+    img {--w: 100% !important}
   }
 
   * {font-weight: 600 !important}

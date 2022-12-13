@@ -2,7 +2,7 @@
   <div id="menu-navbar">
     <!--////////////// drawers //////////////-->
     <!-- toggle drawer -->
-    <CustomeDrawer :model="drawer" @update="drawer = $event">
+    <!-- <CustomeDrawer :model="drawer" @update="drawer = $event">
       <template #header>
         <v-btn id="navbar-toggle" @click="drawer = false">
           <v-icon size="clamp(max(18px, 2em), 3vw, min(34.39px, 3em))">mdi-menu</v-icon>
@@ -48,7 +48,7 @@
           </v-btn>
         </div>
       </template>
-    </CustomeDrawer>
+    </CustomeDrawer> -->
 
 
 
@@ -56,28 +56,30 @@
     <!-- menu random -->
     <v-menu v-model="menuToggle" content-class="menu-toggle" activator=".menu-toggle-activator" :close-on-content-click="false">
       <v-btn id="navbar-toggle" class="menu-toggle-btn" @click="menuToggle = false">
-        <v-icon size="clamp(max(18px, 2em), 3vw, min(34.39px, 3em))">mdi-menu</v-icon>
+        <v-icon size="clamp(max(18px, 2em), 3vw, min(41.61px, 3em))">mdi-menu</v-icon>
       </v-btn>
 
-      <img class="menu-toggle-logo align" src="~/assets/sources/logos/logo-header.svg" alt="logo">
+      <nuxt-link class="menu-toggle-logo align" to="/">
+        <img src="~/assets/sources/logos/logo-header.svg" alt="logo">
+      </nuxt-link>
 
       <div class="center" style="gap: 10px">
         <span class="hspan">IDIOMA:</span>
         
         <div class="center" style="gap: 8px; --fs: 10px">
-          <div class="divcol center" style="gap: 4px">
+          <button class="divcol center" style="gap: 4px">
             <img
               src="~/assets/sources/images/spain-flag.jpg" alt="español" class="aspect"
               style="--w: 30px; --of: cover; --b: 1px solid #fff; --br: 50%">
             <span class="hspan">ESP</span>
-          </div>
+          </button>
           
-          <div class="divcol center" style="gap: 4px">
+          <button class="divcol center" style="gap: 4px">
             <img
               src="~/assets/sources/images/usa-flag.jpg" alt="english" class="aspect"
               style="--w: 30px; --of: cover; --b: 1px solid #fff; --br: 50%">
             <span class="hspan">EN</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -114,7 +116,7 @@ export default {
   name: "NavbarMenuComponent",
   data() {
     return {
-      drawer: false,
+      // drawer: false,
       menuToggle: false,
       dataToggle: [
         { name: "configuración", icon: "", to: "" },

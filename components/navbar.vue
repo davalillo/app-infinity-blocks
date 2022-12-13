@@ -8,7 +8,7 @@
           <v-icon size="2em" style="color: #fff !important">mdi-menu</v-icon>
         </v-tab>
         
-        <v-tab v-for="(item, i) in dataNavbar" :key="i" class="tcap">
+        <v-tab v-for="(item, i) in dataNavbar" :key="i" class="tcap" :to="item.to">
           {{item.name}}
         </v-tab>
       </v-tabs>
@@ -28,11 +28,11 @@ export default {
       dataNavbar: [
         {
           name: "perfil",
-          to: "/"
+          to: "/profile"
         },
         {
           name: "aportaciones",
-          to: "/"
+          to: "/contributions"
         },
         {
           name: "retiros",

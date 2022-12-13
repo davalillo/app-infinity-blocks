@@ -1,5 +1,5 @@
 <template>
-  <div id="home" class="divcol">
+  <div id="profile" class="divcol">
   </div>
 </template>
 
@@ -14,17 +14,14 @@ export default {
     }
   },
   head() {
-    const title = 'Home';
+    const title = 'Perfil';
     return {
       title,
     }
-  },
-  created() {
-    this.$router.push(this.localePath('/profile'))
   },
   methods: {
   }
 };
 </script>
 
-<style src="~/assets/styles/pages/index.scss" lang="scss" />
+<style src="~/assets/styles/pages/profile.scss" lang="scss" />

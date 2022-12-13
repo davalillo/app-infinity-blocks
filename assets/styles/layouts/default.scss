@@ -2,7 +2,7 @@
 // // // layout // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #layout {
-  background: center no-repeat fixed url(../../sources/images/bg-app.png);
+  background: center no-repeat fixed var(--bg);
   background-size: cover;
   // overflow: hidden;
 
@@ -11,18 +11,11 @@
     font-size: var(--resizer);
   }
   .v-main {
+    padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important;
     & > * {
       @include media(max, small) {
         font-size: var(--resizer-mobile)
       }
     }
-  }
-
-  // footer margin modifiable
-  & .with {
-    padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important
-  }
-  & .without {
-    padding-block: calc(var(--h-navbar) + 20px) 0 !important
   }
 }

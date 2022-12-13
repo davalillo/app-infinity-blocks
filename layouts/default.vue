@@ -1,9 +1,12 @@
 <template>
-  <v-app id="layout" class="relative">
+  <v-app
+    id="layout" class="relative"
+    :style="`--bg: ${isExceptionRoute ? '' : `url(${require('~/assets/sources/images/bg-app.png')})`}`"
+  >
     <Alerts ref="alerts" />
     <Navbar ref="navbar" />
     
-    <v-main :class="wrapperSpace?'with':'without'" class="parent">
+    <v-main class="parent" :style="isExceptionRoute ? 'padding-block: 0 !important' : ''">
       <nuxt-child />
     </v-main>
     <!-- <Footer ref="footer" /> -->
@@ -16,15 +19,18 @@ export default {
   // middleware: ['authenticated'],
   data() {
     return {
-      wrapperSpace: true,
     }
+  },
+  computed: {
+    isExceptionRoute() {
+      return this.$route.path === '/contributions'
+    },
   },
   created() {
     // get data profile
     // this.$store.dispatch("getData");
   },
   mounted() {
-    this.scrollX();
     // this.footerHeightListener();
     
     // resize listener
