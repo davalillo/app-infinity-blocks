@@ -24,4 +24,10 @@
     --stroke: 0px;
     --fs: max(13px, 1.2em);
   }
+
+  --spacing: 5px;
+  .anchorlineb {
+    padding-right: var(--spacing);
+    & + h2 {padding-left: var(--spacing)}
+  }
 }

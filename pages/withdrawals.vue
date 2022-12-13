@@ -30,7 +30,7 @@
       HISTORIAL
     </h2>
 
-    <v-card class="card divcol center" style="--bg: var(--accent); --w: min(100%, 30em); gap: 5px">
+    <v-card class="card divcol center" style="--bg: var(--accent); --w: min(100%, 30em); gap: 20px">
       <v-data-table
         :headers="headerHistorial"
         :items="dataHistorial"
@@ -38,7 +38,11 @@
         mobile-breakpoint="-1"
         class="fill_w"
         style=""
-      ></v-data-table>
+      >
+        <template #[`item.price`]="{ item }">
+          {{item.price}} USDT
+        </template>
+      </v-data-table>
 
       <v-btn class="btn" style="--bg: var(--primary)">Ver más</v-btn>
     </v-card>
@@ -74,8 +78,28 @@ export default {
         },
       ],
       
-      headerHistorial: [],
-      dataHistorial: [],
+      headerHistorial: [
+        { value: "type", text: "TIPO", align: "center", sortable: false },
+        { value: "price", text: "VALOR", align: "center", sortable: false },
+        { value: "date", text: "RETIRO", align: "center", sortable: false },
+      ],
+      dataHistorial: [
+        {
+          type: "residual",
+          price: 1000,
+          date: "12/11/22",
+        },
+        {
+          type: "directo",
+          price: 1500,
+          date: "10/11/22",
+        },
+        {
+          type: "beneficio",
+          price: 2000,
+          date: "8/11/22",
+        },
+      ],
     }
   },
   head() {
