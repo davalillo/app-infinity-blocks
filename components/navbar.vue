@@ -36,7 +36,7 @@ export default {
         },
         {
           name: "retiros",
-          to: "/"
+          to: "/withdrawals"
         },
         {
           name: "p. asesores",

@@ -24,7 +24,7 @@
       
       <div class="divcol" style="gap: inherit">
         <v-card v-for="(item, i) in dataContributions" :key="i" class="card grid" style="--bg: var(--accent)">
-          <div class="divcol jcenter anchorline">
+          <div class="divcol jcenter anchorlineb">
             <span class="hspan">{{item.price}} USDT</span>
             <span class="hspan">{{item.state}}</span>
             <span>INICIA: {{item.start_date}}</span>

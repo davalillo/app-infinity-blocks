@@ -2,104 +2,26 @@
 // // // withdrawals // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #withdrawals {
-  > section {
-    width: 100vw;
-    margin-inline: calc(50% - 50vw);
+  @include parent;
+  padding-inline: var(--margin-global);
+
+  h2 {
+    --fs: max(16px, 1.5em);
+    --stroke: 1.5px;
+    --ls: .1em;
+  }
+  h3 {
+    --fs: max(16px, 2.5em);
+    --stroke: .1px;
+    --ls: .05em;
   }
 
-  &--top {
-    background: center no-repeat url(../../sources/images/bg-app.png);
-    background-size: cover;
-    @include media(min, small) {height: 32em}
-    &-wrapper {
-      @include parent;
-      padding-inline: var(--margin-global);
-      padding-block: calc(var(--h-navbar) + 3em) 2.5em;
-      gap: 30px;
-    }
-    &-content {
-      --bg: #2B4DDF;
-      --w: min(100%, 30em);
-      aspect-ratio: 2.2 / 1;
-      
-      background-image: url(../../sources/images/contributions-decoration.png) !important;
-      background-position: top right !important;
-      background-repeat: no-repeat !important;
-      background-size: 25% !important;
-      gap: 1em;
-      .hspan {--fs: max(20px, 2.5em)}
-      .hspan + .hspan {--fs: max(15px, 2em)}
-      .v-btn {--fs: max(18px, 1.8em)}
-    }
+  .v-card {
+    aspect-ratio: 2.3 / 1;
   }
 
-  &--bottom {
-    @include parent;
-    padding-inline: var(--margin-global);
-    padding-block: 2.5em;
-    background-color: #fff;
-    .v-card {
-      $mobile: 400px;
-      --gtc: 1fr 1fr;
-      @include media(max, 500px) {--gtc: max(140px, 15em) 1fr}
-      @include media(max, $mobile) {
-        --gtc: 1fr;
-        gap: 10px;
-      }
-      // line
-      > div {
-        --margin: 1.6em;
-        @include media(max, $mobile) {--margin: 0}
-        
-        &:first-child {
-          padding-right: var(--margin);
-          --w-line: 1px;
-          --h-line: calc(80% - 16.8px);
-          --l: auto;
-          --m: 0;
-          @include media(max, $mobile) {&::before {display: none !important}}
-          & + div {padding-left: var(--margin)}
-        }
-        
-        .v-input__slider {
-          max-width: 298px !important;
-          width: 100% !important;
-          margin-left: auto;
-          .v-slider__thumb-container {display: none}
-          .v-slider__track {
-            &-container {
-              height: 18px;
-              border-radius: 10px;
-              background-color: #daddde !important;
-            }
-            &-fill {
-              background: no-repeat var(--bg-image) !important;
-              background-size: cover;
-              border-radius: 0 10px 10px 0;
-            }
-          }
-        }
-        
-        button {
-          width: max-content;
-        }
-      }
-      
-      .hspan {
-        --stroke: 2.2px;
-        --fw: bold;
-        --fs: max(17px, 1.5625em);
-        letter-spacing: .12ch;
-        & + .hspan {
-          --stroke: .8px;
-          --fs: max(16px, 1.25em);
-          margin-bottom: 2px;
-        }
-      }
-      span:not(.hspan) {
-        font-size: max(11px, 0.875em);
-        line-height: 1.2;
-      }
-    }
+  .v-btn.btn {
+    --stroke: 0px;
+    --fs: max(13px, 1.2em);
   }
 }
