@@ -62,6 +62,7 @@
   --resizer: clamp(12px, 1vw, 16px);
   --resizer-mobile: clamp(10px, 1.5vw, 12px);
   --margin-global: 5em;
+  @include media(max, 330px) {--margin-global: 3em}
   --parent: 880px;
   --subparent: 1900px;
   --h-navbar: 4em;
@@ -242,12 +243,13 @@ $skew-left: skewX(-12deg) translateX(-1px);
   --g: 5px;
   --br: .25em;
   --bs: none;
-  --fs: max(16px, 1em);
+  --fs: max(18px, 1.8em);
   --fw: bold;
   --ls: -0.005em;
   --lh: 1;
   --f: drop-shadow(2.5px 1.5px 1px rgba(0 0 0 / .4)) !important;
   --t: initial;
+  --stroke: .3px;
   
   background: var(--bg) !important;
   color: var(--c) !important;

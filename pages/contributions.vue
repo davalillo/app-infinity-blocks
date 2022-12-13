@@ -3,14 +3,14 @@
     <!-- section top -->
     <section id="contributions--top">
       <div id="contributions--top-wrapper" class="divcol center tcenter">
-        <div class="divcol bold center" style="gap: 2px; --fs: max(17px, 2em)">
-          <span class="hspan">Balance Wallet</span>
-          <span class="hspan">6252 USDT</span>
+        <div class="divcol bold center" style="gap: 2px">
+          <h4 class="p">Balance Wallet</h4>
+          <h4 class="p">6252 USDT</h4>
         </div>
 
         <v-sheet id="contributions--top-content" class="card divcol center bold">
-          <span class="hspan" style="--under: underline">100</span>
-          <span class="hspan">USDT</span>
+          <h2 class="p" style="text-decoration: underline; --ls: .1em; --stroke: 1.3px">100</h2>
+          <span class="hspan" style="--fs: max(15px, 2em)">USDT</span>
           
           <v-btn class="btn" style="--bg: #03BBD4">Aportar</v-btn>
         </v-sheet>
@@ -23,7 +23,6 @@
       <h2 class="p tcenter" style="--c: var(--accent)">APORTACIONES</h2>
       
       <div class="divcol" style="gap: inherit">
-        <!-- nedd try doing grid this <--- -->
         <v-card v-for="(item, i) in dataContributions" :key="i" class="card grid" style="--bg: var(--accent)">
           <div class="divcol jcenter anchorline">
             <span class="hspan">{{item.price}} USDT</span>

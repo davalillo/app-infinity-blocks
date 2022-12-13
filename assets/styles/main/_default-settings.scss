@@ -194,24 +194,26 @@ h1:not(.not_typography, .not) {
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 h2:not(.not_typography, .not) {
-  --stroke: 1.8px;
+  --stroke: 2.4px;
   
   font-family: var(--font1);
   font-weight: var(--fw, 900) !important;
-  font-size: var(--fs, max(16px, 2.1em));
-  letter-spacing: 0.03em;
+  font-size: var(--fs, max(18px, 2.5em));
+  letter-spacing: var(--ls, 0.03em);
 }
 h3:not(.not_typography, .not) {
+  --stroke: 1.3px;
+  
   font-family: var(--font1);
-  font-weight: var(--fw, 400) !important;
-  font-size: var(--fs, max(16px, 2.5em));
-  letter-spacing: 0.03em;  
+  font-weight: var(--fw, 900) !important;
+  font-size: var(--fs, max(17px, 2.1em));
+  letter-spacing: var(--ls, 0.03em);
 }
 h4:not(.not_typography, .not) {
   font-family: var(--font1);
-  font-weight: var(--fw, 400) !important;
+  font-weight: var(--fw, 900) !important;
   font-size: var(--fs, max(16px, 2em));
-  letter-spacing: 0.03em;
+  letter-spacing: var(--ls, 0.03em);
 }
 h5:not(.not_typography, .not) {
   font-family: var(--font1);
@@ -245,6 +247,7 @@ label:not(.v-input .v-label, .not_typography, .not) {
 .hspan {
   font-size: var(--fs, 16px);
   text-decoration: var(--under, initial);
+  letter-spacing: var(--ls, normal);
 }
 
 

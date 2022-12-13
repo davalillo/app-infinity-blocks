@@ -1,7 +1,7 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
-// // // contributions // // // 
+// // // withdrawals // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
-#contributions {
+#withdrawals {
   > section {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
@@ -27,6 +27,9 @@
       background-repeat: no-repeat !important;
       background-size: 25% !important;
       gap: 1em;
+      .hspan {--fs: max(20px, 2.5em)}
+      .hspan + .hspan {--fs: max(15px, 2em)}
+      .v-btn {--fs: max(18px, 1.8em)}
     }
   }
 
