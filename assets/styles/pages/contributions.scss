@@ -26,7 +26,7 @@
       background-position: top right !important;
       background-repeat: no-repeat !important;
       background-size: 25% !important;
-      gap: 1em;
+      gap: 1.5em;
     }
   }
 
@@ -38,6 +38,7 @@
     .v-card {
       $mobile: 400px;
       --gtc: 1fr 1fr;
+      position: relative;
       @include media(max, 500px) {--gtc: max(140px, 15em) 1fr}
       @include media(max, $mobile) {
         --gtc: 1fr;
@@ -54,7 +55,10 @@
           --h-line: calc(80% - 16.8px);
           --l: auto;
           --m: 0;
-          @include media(max, $mobile) {&::before {display: none !important}}
+          @include media(max, $mobile) {
+            &::before {display: none !important};
+            margin-right: 30px;
+          }
           & + div {padding-left: var(--margin)}
         }
         
@@ -79,22 +83,25 @@
         
         button {
           width: max-content;
+          @include media(max, $mobile) {
+            @include absolute(auto, 1.4em, 1.6em);
+          }
         }
       }
       
       .hspan {
-        --stroke: 2.2px;
+        --stroke: .8px;
         --fw: bold;
-        --fs: max(17px, 1.5625em);
-        letter-spacing: .12ch;
+        --fs: max(17px, 2em);
         & + .hspan {
-          --stroke: .8px;
+          --stroke: .1px;
           --fs: max(16px, 1.25em);
           margin-bottom: 2px;
         }
       }
       span:not(.hspan) {
-        font-size: max(11px, 0.875em);
+        opacity: .8;
+        font-size: max(11px, 0.8em);
         line-height: 1.2;
       }
     }

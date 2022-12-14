@@ -41,7 +41,8 @@
         font-size: 1.3em !important;
         @include media(max, 500px) {font-size: 1em !important}
         @include media(max, x-small) {font-size: max(10px, 1em) !important}
-        font-weight: 600 !important;
+        font-weight: 400 !important;
+        font-family: var(--font3);
         padding-inline: 0.625em;
         &:not(#navbar-toggle) {
           flex: 1 1;
@@ -111,6 +112,7 @@
   background-image: url(../../sources/images/toggle-decoration.png);
   background-position: bottom left;
   background-size: 45%;
+  filter: drop-shadow(6px 8px 6px rgba(0 0 0 / .5));
   
   // lines
   > :first-child + * ~ * {
@@ -168,8 +170,9 @@
     padding: 12px 14px;
     border-radius: 8px;
     span {
-      font-weight: bold !important;
-      font-size: 20px;
+      font-family: var(--font3);
+      font-weight: 500 !important;
+      font-size: 23px;
     }
   }
 
@@ -185,3 +188,14 @@
   }
 }
 
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  @include media(min, small) {transform: translate(-200%, -12px)}
+  @include media(max, small) {transform: translate(-100%, -12px)}
+  opacity: .8;
+}

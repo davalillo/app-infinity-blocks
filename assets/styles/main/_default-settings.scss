@@ -7,15 +7,54 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 @font-face {
   font-family: 'Gotham';
-  src: url(~/static/fonts/gotham/GothamLight.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamLightItalic.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamMedium_1.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamMedium.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamMediumItalic.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamBook.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamBookItalic.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamBold.ttf) format('truetype'),
-      url(~/static/fonts/gotham/GothamBoldItalic.ttf) format('truetype');
+  src: url(~/static/fonts/gotham/Gotham-XLightItalic.otf) format('opentype');
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(~/static/fonts/gotham/Gotham-Light.otf) format('opentype');
+  font-weight: 200;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(~/static/fonts/gotham/GothamMedium_1.ttf) format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(~/static/fonts/gotham/Gotham-UltraItalic.otf) format('opentype');
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(~/static/fonts/gotham/Gotham-Bold.otf) format('opentype');
+  font-weight: 800;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(~/static/fonts/gotham/Gotham-Black.otf) format('opentype');
+  font-weight: 900;
+}
+@font-face {
+  font-family: 'Groningen';
+  src: url(~/static/fonts/gotham/Groningen-Regular.ttf) format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Metropolis';
+  src: url(~/static/fonts/gotham/Metropolis-Light.otf) format('opentype');
+  font-weight: 200;
+}
+@font-face {
+  font-family: 'Metropolis';
+  src: url(~/static/fonts/gotham/Metropolis-Regular.otf) format('opentype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Metropolis';
+  src: url(~/static/fonts/gotham/Metropolis-Bold.otf) format('opentype');
+  font-weight: 900;
 }
 html {
   scroll-behavior: smooth;
@@ -190,42 +229,39 @@ h1:not(.not_typography, .not) {
   font-family: var(--font2);
   font-weight: var(--fw, 400) !important;
   font-size: var(--fs, max(16px, 4em));
-  letter-spacing: 0.625em;
+  letter-spacing: normal;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 h2:not(.not_typography, .not) {
-  --stroke: 2.4px;
-  
-  font-family: var(--font1);
   font-weight: var(--fw, 900) !important;
   font-size: var(--fs, max(18px, 2.5em));
-  letter-spacing: var(--ls, 0.03em);
+  letter-spacing: var(--ls, normal);
+  &:not(.htitle) {font-family: var(--font3)}
+  &.htitle {font-family: var(--font1)}
 }
 h3:not(.not_typography, .not) {
-  --stroke: 1.3px;
-  
   font-family: var(--font1);
   font-weight: var(--fw, 900) !important;
   font-size: var(--fs, max(17px, 2.1em));
-  letter-spacing: var(--ls, 0.03em);
+  letter-spacing: var(--ls, normal);
 }
 h4:not(.not_typography, .not) {
   font-family: var(--font1);
-  font-weight: var(--fw, 900) !important;
+  font-weight: var(--fw, 400) !important;
   font-size: var(--fs, max(16px, 2em));
-  letter-spacing: var(--ls, 0.03em);
+  letter-spacing: var(--ls, normal);
 }
 h5:not(.not_typography, .not) {
   font-family: var(--font1);
   font-weight: var(--fw, 400) !important;
   font-size: var(--fs, max(16px, 1.5em));
-  letter-spacing: 0.03em;
+  letter-spacing: normal;
 }
 h6:not(.not_typography, .not) {
   font-family: var(--font1);
   font-weight: var(--fw, 400) !important;
   font-size: var(--fs, max(16px, 1em));
-  letter-spacing: 0.03em;
+  letter-spacing: normal;
 }
 p:not(.not_typography, .not) {
   font-family: var(--font1);
@@ -302,13 +338,13 @@ img:not(.not_html, .not) {
   // th
   --c-th: #fff;
   --fw-th: var(--fw, bold);
-  --fs-th: max(12px, 1.3em);
+  --fs-th: clamp(max(12px, 1em), 1.3vw, 1.3em);
   --distance-th: 0;
   // td
   --bg-td: transparent;
   --p-td: 0;
   --br-td: 0;
-  --fs-td: max(13px, 1.3em);
+  --fs-td: clamp(max(13px, 1em), 1.3vw, 1.3em);
 
   background-color: var(--bg) !important;
   table {border-spacing: 0 var(--spacing) !important}
@@ -327,7 +363,6 @@ img:not(.not_html, .not) {
     tr {
       th {
         span {
-          --stroke: 0.0625em;
           font-size: var(--fs-th) !important;
           font-weight: var(--fw-th) !important;
           color: var(--c-th) !important;
