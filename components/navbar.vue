@@ -40,7 +40,7 @@ export default {
         },
         {
           name: "p. asesores",
-          to: "/"
+          to: "/advisers"
         }
       ],
       dataMenuLogin: [

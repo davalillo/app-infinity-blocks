@@ -75,7 +75,7 @@
             }
             &-fill {
               background: no-repeat var(--bg-image) !important;
-              background-size: cover;
+              background-size: fill !important;
               border-radius: 0 10px 10px 0;
             }
           }

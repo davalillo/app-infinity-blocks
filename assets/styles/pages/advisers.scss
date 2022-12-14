@@ -1,0 +1,81 @@
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // advisers // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+#advisers {
+  @include parent;
+  padding-top: 6em;
+  padding-inline: var(--margin-global);
+
+  &-logo {
+    --w: 50px;
+    @include absolute(0, auto, 0, -60px);
+  }
+
+  h2 {
+    --fs: max(18px, 1.8em);
+    // --stroke: 1.5px;
+  }
+  h3 {
+    --fs: max(16px, 2.3em);
+    // --stroke: .1px;
+  }
+  .v-btn.btn {
+    --fs: max(16px, 1.8em);
+  }
+
+  .v-card {
+    --p: clamp(1.5em, 2vw, 2em);
+    &.bg-image {
+      background-image: url(../../sources/images/contributions-decoration.png) !important;
+      background-position: top right !important;
+      background-repeat: no-repeat !important;
+      background-size: 25% !important;
+    }
+
+    #premium-decoration {
+      --padding: clamp(1.5em, 2vw, 2em);
+      --w: 6em;
+      position: absolute;
+      top: calc((var(--padding) + 10px) * -1);
+      right: calc((var(--padding) + 10px) * -1);
+    }
+
+    .v-input__slider {
+      width: 100% !important;
+      .v-slider__thumb-container {
+        --size: 45px;
+        width: var(--size);
+        height: var(--size);
+        position: relative;
+        &::after {
+          content: var(--thumb-text);
+          position: absolute;
+          left: 2px;
+          top: calc(var(--size) / 4) !important;
+          color: #fff;
+          font-size: 13px;
+          font-weight: 400;
+        }
+        ::before, ::after {display: none !important}
+        .v-slider__thumb {
+          background: center no-repeat url(../../sources/images/progress-thumb-purple.png) !important;
+          background-size: cover !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+      
+      .v-slider__track {
+        &-container {
+          height: 1em;
+          border-radius: 15px !important;
+          background-color: #daddde !important;
+        }
+        &-fill {
+          background: no-repeat url(../../sources/images/progress-purple.png) !important;
+          background-size: cover !important;
+        }
+      }
+    }
+  }
+}
