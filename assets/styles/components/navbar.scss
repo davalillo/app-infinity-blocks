@@ -51,7 +51,7 @@
           &::after {
             content: "";
             @include absolute(0,0,auto,0);
-            height: 70%;
+            height: 2.2ch;
             width: 0.125em;
             background-color: #fff;
           }

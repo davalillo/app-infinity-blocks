@@ -3,5 +3,27 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #profile {
   @include parent;
+  padding-top: 3em;
   padding-inline: var(--margin-global);
+
+  > div:first-child {
+    --spacing: 2.5em;
+    position: relative;
+    margin-bottom: var(--spacing);
+    padding-bottom: var(--spacing);
+    // margins
+    > img ~ *:not(img) {margin-top: 10px}
+    // line
+    &::after {
+      content: "";
+      @include absolute(0, auto, 0, 0);
+      width: 200px;
+      height: 1px;
+      background-color: #fff;
+    }
+  }
+
+  h2 {
+    --fs: max(21px, 1.8em);
+  }
 }
