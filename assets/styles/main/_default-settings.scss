@@ -146,9 +146,9 @@ body {background: var(--bg-ap)}
 :is(.primary--text, button[type].primary--text):not(.not_clr, .not) {
   color: var(--active) !important;
   
-  :is(span, i) {color: var(--active) !important}
+  :is(span, i):not(.not_clr, .not) {color: var(--active) !important}
   
-  .v-input__slot::after {
+  .v-input:not(.not_clr, .not) .v-input__slot::after {
     background: var(--active) !important;
     border-color: var(--active) !important;
   }
@@ -273,7 +273,7 @@ a:not(.not_typography, .not) {
   text-decoration: none;
   font-family: var(--font1);
   font-weight: var(--fw, 400) !important;
-  font-size: var(--fs, max(13px, 1em));
+  font-size: var(--fs, max(13px, 1em)) !important;
 }
 label:not(.v-input .v-label, .not_typography, .not) {
   font-family: var(--font1);
@@ -281,7 +281,7 @@ label:not(.v-input .v-label, .not_typography, .not) {
   font-size: var(--fs, max(13px, 1em));
 }
 .hspan {
-  font-size: var(--fs, 16px);
+  font-size: var(--fs, 16px) !important;
   text-decoration: var(--under, initial);
   letter-spacing: var(--ls, normal);
 }
@@ -599,18 +599,19 @@ img:not(.not_html, .not) {
 
 //- input slot
 .v-text-field--solo:not(.not_vuetify, .not) {
-  --bg: rgba(245, 245, 245, 0.4);
-  --c: #000000;
+  --bg: var(--active);
+  --c: #fff;
   --c-label: #FFFFFF;
-  --c-place: #6e6e6e;
+  --c-place: hsl(0 0% 100% / .6);
   --b: initial;
-  --br: 30px;
+  --ot: initial;
+  --br: .45em;
   --p: 0 12px;
   --w: initial;
   --max-w: none;
   --min-w: none;
   --h: 2.75em;
-  --bs: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  --bs: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
   --f: none;
   --t: none;
   --o-disabled: .5;
@@ -631,7 +632,7 @@ img:not(.not_html, .not) {
   --lh-label: var(--lh);
   --stroke-label: var(--stroke, initial);
   // placeholder
-  --fs-place: 1em;
+  --fs-place: .85em;
   --fw-place: var(--fw);
   --ff-place: var(--ff);
   --tt-place: var(--tt);
@@ -654,6 +655,7 @@ img:not(.not_html, .not) {
     background: var(--bg) !important;
     border-radius: var(--br) !important;
     border: var(--b);
+    outline: var(--ol);
     padding: var(--p) !important;
     min-height: var(--h);
     box-shadow: var(--bs) !important;
@@ -681,6 +683,7 @@ img:not(.not_html, .not) {
     
     // placeholder //
     &::placeholder {
+      font-style: italic;
       color: var(--c-place);
       font-size: var(--fs-place);
       font-weight: var(--fw-place);
@@ -711,8 +714,8 @@ img:not(.not_html, .not) {
   }
   
   // input statements //
-  &.v-input--is-focused:not(.not_focus, .not_statement) .v-input__slot {--b: 1px solid rgba(255, 255, 255, 0.3)}
-  &.error--text:not(.not_error, .not_statement) .v-input__slot {--b: 1px solid var(--error)}
+  &.v-input--is-focused:not(.not_focus, .not_statement) .v-input__slot {--ol: 2px solid rgba(255, 255, 255, 0.3)}
+  &.error--text:not(.not_error, .not_statement) .v-input__slot {--ol: 2px solid var(--error); --bg: var(--error)}
   &.v-input--is-disabled:not(.not_disabled, .not_statement) {opacity: var(--o-disabled); pointer-events: none}
 }
 
@@ -751,8 +754,8 @@ img:not(.not_html, .not) {
 
 .v-select-list {
   font-size: var(--resizer);
-  background: var(--secondary) !important;
-  border-radius: $border-btn !important;
+  background: var(--primary) !important;
+  border-radius: .45em !important;
   overflow: hidden;
   
   :is(.v-list-item__title, span) {
@@ -765,9 +768,8 @@ img:not(.not_html, .not) {
   .v-list-item {
     min-height: 3em;
     &--active {
-      background: $clr-btn !important;
-      
-      :is(.v-list-item__title, span) {color: $clr-text-btn !important}
+      background: var(--active) !important;
+      :is(.v-list-item__title, span) {color: #fff !important}
     }
   }
 }

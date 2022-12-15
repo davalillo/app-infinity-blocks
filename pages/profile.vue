@@ -14,13 +14,20 @@
       
       <h2 class="p">
         pedroperez01
-        <sup>
-          <img src="~/assets/sources/icons/verified.svg" alt="verified" style="--w: .8em">
+        <sup v-if="verified">
+          <img src="~/assets/sources/icons/verified.svg" alt="verified" class="aspect" style="--w: .8em">
         </sup>
       </h2>
       
-      <span class="hspan" style="word-break: break-all; --fs: max(16px, 1.15em)">
+      <span v-if="verified" class="hspan" style="word-break: break-all; --fs: max(16px, 1.15em)">
         0x5d2D75ED51D4A3B275f00F86632543f4010E9232
+      </span>
+      
+      <span v-else class="hspan mt-0" style="word-break: break-all; --fs: max(15px, 1.15em)">
+        Verifica tu cuenta, por favor
+        <sup>
+          <img src="~/assets/sources/icons/warning.svg" alt="verify alert" class="aspect" style="--w: clamp(1.5em, 1.7vw, 1.7em)">
+        </sup>
       </span>
     </div>
 
@@ -34,6 +41,13 @@
         1000 USDT
       </span>
     </v-card>
+
+    <div id="container-contact" class="divcol">
+      <span class="hspan mt-5">Patrocinador:</span>
+      <span class="hspan">Juan Antonio Perez Loza</span>
+      <span class="hspan">juanantonio@gmail.com</span>
+      <span class="hspan">000 000 00</span>
+    </div>
   </div>
 </template>
 
@@ -45,6 +59,7 @@ export default {
   mixins: [computeds],
   data() {
     return {
+      verified: false,
     }
   },
   head() {

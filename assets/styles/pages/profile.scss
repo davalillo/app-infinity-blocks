@@ -26,4 +26,14 @@
   h2 {
     --fs: max(21px, 1.8em);
   }
+
+  #container-contact {
+    --fs: max(16px, 1.25em);
+    
+    span {line-height: 1.1}
+    
+    span:first-of-type,
+    span:first-of-type + span {--fw: 900}
+    span:first-of-type + span ~ span {opacity: .9}
+  }
 }
