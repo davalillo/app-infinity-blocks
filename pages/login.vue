@@ -98,6 +98,7 @@
                   <v-text-field
                     :id="formRegister.password ? '' : 'password-register'"
                     v-model="formRegister.password"
+                    type="password"
                     solo hide-details
                     :rules="rules.required"
                   ></v-text-field>
@@ -105,9 +106,10 @@
                 
                 <v-text-field
                   :id="formRegister.password ? 'password-register' : ''"
-                  v-model="passwordConfirmer"
+                  v-model="passwordConfirmerRegister"
+                  type="password"
                   solo hide-details
-                  :rules="rules.required"
+                  :rules="rules.confirmPasswordRegister"
                 ></v-text-field>
               </div>
               
@@ -192,7 +194,7 @@
                 </label>
                 <v-text-field
                   id="password-recover"
-                  v-model="formLogin.username"
+                  v-model="formRecover.password"
                   type="password"
                   :rules="rules.required"
                   placeholder="Ingresa nueva contraseña"
@@ -204,9 +206,9 @@
                 <label for="confirm-password-recover">CONFIRMAR CONTRASEÑA:</label>
                 <v-text-field
                   id="confirm-password-login"
-                  v-model="formLogin.password"
+                  v-model="passwordConfirmerRecover"
                   type="password"
-                  :rules="rules.required"
+                  :rules="rules.confirmPasswordRecover"
                   placeholder="Confirma contraseña"
                   hide-details solo
                 ></v-text-field>
@@ -244,7 +246,11 @@ export default {
         phonePrefix: "+593",
         phone: undefined,
       },
-      passwordConfirmer: undefined,
+      passwordConfirmerRegister: undefined,
+      formRecover: {
+        password: undefined,
+      },
+      passwordConfirmerRecover: undefined,
       countryPhoneList: [
         {
           icon: require("~/assets/sources/images/spain-flag.jpg"),
@@ -265,6 +271,14 @@ export default {
           (v) => !!v || "Field required",
           v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
+        confirmPasswordRegister: [
+          (v) => !!v || "Field required",
+          v => this.formRegister.password === this.passwordConfirmerRegister || 'Password must match',
+        ],
+        confirmPasswordRecover: [
+          (v) => !!v || "Field required",
+          v => this.formRecover.password === this.passwordConfirmerRecover || 'Password must match',
+        ],
       }
     }
   },
@@ -281,18 +295,19 @@ export default {
   methods: {
     login() {
       if (!this.$refs.formLogin.validate()) return alert("verifica que los campos sean correctos");
-      console.log("login")
-      alert("logged")
+      localStorage.setItem("auth", true)
+      this.$router.push(this.localePath('/profile'))
     },
     register() {
       if (!this.$refs.formRegister.validate()) return alert("verifica que los campos sean correctos");
-      console.log("registered")
-      alert("registered")
+      localStorage.setItem("auth", true)
+      this.$router.push(this.localePath('/profile'))
     },
     recover() {
       if (!this.$refs.formRecover.validate()) return alert("verifica que los campos sean correctos");
       console.log("recovered")
       alert("recovered")
+      this.$router.go()
     }
   }
 }
