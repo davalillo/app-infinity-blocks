@@ -729,6 +729,7 @@ img:not(.not_html, .not) {
   --size: 20px;
   --t: initial;
 
+  opacity: 1 !important;
   .v-badge__badge {
     display: grid;
     place-content: center;

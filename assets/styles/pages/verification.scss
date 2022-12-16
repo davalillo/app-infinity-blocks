@@ -1,0 +1,40 @@
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // verification // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+#verification {
+  background: center no-repeat fixed url(../../sources/images/bg-app.png);
+  background-size: cover;
+  
+  & > * {
+    font-size: var(--resizer);
+  }
+  .v-main {
+    padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important;
+    & > * {
+      @include media(max, small) {
+        font-size: var(--resizer-mobile)
+      }
+    }
+  }
+
+  &-content {
+    @include parent;
+    padding-inline: var(--margin-global);
+
+    .window-content {
+      width: min(100%, 37em);
+      margin-inline: auto;
+    }
+
+    label {
+      --fw: 900;
+      --fs: max(16px, 1.3em);
+      text-indent: 1ch;
+    }
+    .v-btn.btn {
+      --bg: var(--primary);
+      --fs: max(15px, 1.4em);
+      --w: max-content;
+    }
+  }
+}

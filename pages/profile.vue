@@ -55,11 +55,12 @@
 import computeds from '~/mixins/computeds'
 
 export default {
-  name: "HomePage",
+  name: "ProfilePage",
   mixins: [computeds],
   data() {
     return {
       verified: false,
+      // for test <---------------
     }
   },
   head() {

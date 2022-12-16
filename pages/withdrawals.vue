@@ -55,7 +55,7 @@
 import computeds from '~/mixins/computeds'
 
 export default {
-  name: "HomePage",
+  name: "WithdrawalsPage",
   mixins: [computeds],
   data() {
     return {

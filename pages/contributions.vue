@@ -62,7 +62,7 @@
 import computeds from '~/mixins/computeds'
 
 export default {
-  name: "HomePage",
+  name: "ContributionsPage",
   mixins: [computeds],
   data() {
     return {

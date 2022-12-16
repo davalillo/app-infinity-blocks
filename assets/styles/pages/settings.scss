@@ -1,0 +1,87 @@
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // settings // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+#settings {
+  background: center no-repeat fixed url(../../sources/images/bg-app.png);
+  background-size: cover;
+  
+  & > * {
+    font-size: var(--resizer);
+  }
+  .v-main {
+    padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important;
+    & > * {
+      @include media(max, small) {
+        font-size: var(--resizer-mobile)
+      }
+    }
+  }
+
+  &-content {
+    @include parent;
+    padding-inline: var(--margin-global);
+
+    h2 {
+      --fs: max(18px, 2.5em);
+    }
+    h3 {
+      text-align: center;
+      --fw: 900;
+      --fs: max(16px, 1.5em);
+    }
+    label {
+      --fw: 900;
+      --fs: max(16px, 1.3em);
+      text-indent: 1ch;
+    }
+    .v-btn.btn {
+      --bg: var(--active);
+      --fs: max(15px, 1.4em);
+      --w: max-content;
+    }
+    .v-input {
+      --bg: var(--primary);
+      --fs: 1em;
+      
+      * {text-transform: capitalize}
+      &__prepend-outer {
+        margin-block: 0;
+        input {display: none}
+        .v-input__append-inner {
+          padding: 0;
+          .v-icon {font-size: 1.1em}
+        }
+      }
+
+      &.surnames {
+        max-width: 5em !important;
+      }
+    }
+    .v-card {
+      --bg: var(--accent);
+      --w: min(100%, 30em);
+    }
+
+    #beneficiaries {
+      width: min(100%, 30em);
+      
+      h3 {
+        text-indent: 1ch;
+        text-align: start;
+        gap: 5px;
+        @include media(max, 360px) {
+          flex-direction: column;
+          align-items: flex-start
+        };
+      }
+      h3 span {
+        --fw: 100;
+        font-size: .7em;
+        opacity: .5;
+        font-style: italic;
+        text-indent: 0;
+        @include media(max, 360px) {margin-left: auto};
+      }
+    }
+  }
+}

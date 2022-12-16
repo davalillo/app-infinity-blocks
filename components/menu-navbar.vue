@@ -52,12 +52,13 @@
 
 
 
-    <!--////////////// menues //////////////-->
-    <!-- menu random -->
-      <v-menu
-        v-model="menuToggle" content-class="menu-toggle" activator=".menu-toggle-activator"
-        :close-on-content-click="false" transition="slide-fade"
-      >
+  <!--////////////// menues //////////////-->
+  <!-- menu random -->
+    <v-menu
+      v-model="menuToggle" content-class="menu-toggle" activator=".menu-toggle-activator"
+      :close-on-content-click="false" transition="slide-fade"
+    >
+      <div class="menu-toggle-wrapper">
         <v-btn id="navbar-toggle" class="menu-toggle-btn" @click="menuToggle = false">
           <v-icon size="clamp(max(18px, 2em), 3vw, min(41.61px, 3em))">mdi-menu</v-icon>
         </v-btn>
@@ -118,6 +119,7 @@
             <img :src="require(`~/assets/sources/icons/${item.icon}.svg`)" :alt="`${item.icon} icon`" style="--w: 30px">
           </v-btn>
         </div>
+      </div>
     </v-menu>
   </div>
 </template>

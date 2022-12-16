@@ -17,6 +17,12 @@
 
 ///////////////////// global ///////////////////////
 
+// input selects
+@layer layout {
+  .v-input.v-select * {color: #fff !important}
+}
+
+// custome tooltip
 .custome-tooltip {
   --c: var(--primary);
   

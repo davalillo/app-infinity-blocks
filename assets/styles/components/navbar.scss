@@ -101,11 +101,6 @@
   
   width: var(--w-menu-toggle);
   height: 100vh;
-  padding-inline: var(--p-inline);
-  padding-block: 30px;
-  @include media(min, small) {padding-block: 40px}
-  display: flex !important;
-  flex-direction: column !important;
   background-color: var(--primary);
   transform: translateY(-12px);
   @include media(max, 904px) {transform: translate(-12px, -12px)}
@@ -113,76 +108,86 @@
   background-position: bottom left;
   background-size: 45%;
   filter: drop-shadow(6px 8px 6px rgba(0 0 0 / .5));
-  
-  // lines
-  > :first-child + * ~ * {
-    --spacing: 20px;
+
+  &-wrapper {
+    padding-inline: var(--p-inline);
+    padding-block: 30px;
+    @include media(min, small) {padding-block: 40px}
+    display: flex;
+    flex-direction: column;
     
-    margin-top: var(--spacing);
-    padding-top: var(--spacing);
-    position: relative;
-    width: 100%;
-    &::after {
-      content: "";
-      @include absolute(0,0,0);
+    // lines
+    > :first-child + * ~ * {
+      --spacing: 20px;
+      
+      margin-top: var(--spacing);
+      padding-top: var(--spacing);
+      position: relative;
       width: 100%;
-      height: 1px;
-      background-color: var(--clr-line);
+      &::after {
+        content: "";
+        @include absolute(0,0,0);
+        width: 100%;
+        height: 1px;
+        background-color: var(--clr-line);
+      }
     }
-  }
-  
-  // toggle button
-  &-btn#navbar-toggle {
-    --size: var(--h-navbar);
     
-    font-size: var(--resizer);
-    @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
-    background-color: var(--active) !important;
-    width: var(--size) !important;
-    min-width: var(--size) !important;
-    @include media(min, small) {
-      width: min(83.19px, 5em) !important;
-      min-width: min(83.19px, 5em) !important;
+    // toggle button
+    .menu-toggle-btn#navbar-toggle {
+      --size: var(--h-navbar);
+      
+      font-size: var(--resizer);
+      @include media(max, 370px) {font-size: clamp(9px, 1vw, 16px)}
+      background-color: var(--active) !important;
+      width: var(--size) !important;
+      min-width: var(--size) !important;
+      @include media(min, small) {
+        width: min(83.19px, 5em) !important;
+        min-width: min(83.19px, 5em) !important;
+      }
+      min-height: var(--size) !important;
+      height: var(--size) !important;
+      border-radius: 0;
+      border-end-end-radius: 1.25em;
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
-    min-height: var(--size) !important;
-    height: var(--size) !important;
-    border-radius: 0;
-    border-end-end-radius: 1.25em;
-    padding: 0 !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
 
-  // logo
-  &-logo {
-    width: 70% !important;
-    max-width: 70% !important;
-    margin-inline: auto !important;
-    img {width: 100% !important}
-  }
-
-  * {font-weight: 600 !important}
-
-  .clock {
-    --c: var(--active);
-    background-color: #fff !important;
-    padding: 12px 14px;
-    border-radius: 8px;
-    span {
-      font-family: var(--font3);
-      font-weight: 500 !important;
-      font-size: 23px;
+    // logo
+    .menu-toggle-logo {
+      width: 70% !important;
+      max-width: 70% !important;
+      margin-inline: auto !important;
+      img {width: 100% !important}
     }
-  }
 
-  .v-list {
-    &-item {
-      min-height: 40px;
-      &__title {z-index: 1}
-      &::before, &::after, .v-ripple__container, .v-ripple__container span {
-        min-width: calc(var(--w-menu-toggle) + (var(--p-inline) * 2)) !important;
-        margin-left: calc(var(--p-inline) * -1);
+    * {font-weight: 600 !important}
+
+    .clock {
+      --c: var(--active);
+      background-color: #fff !important;
+      padding: 12px 14px;
+      border-radius: 8px;
+      span {
+        font-family: var(--font3);
+        font-weight: 500 !important;
+        font-size: 23px;
+      }
+    }
+
+    .v-list {
+      &-item {
+        min-height: 40px;
+        &__title {z-index: 1}
+        &::before, &::after, .v-ripple__container, .v-ripple__container span {
+          min-width: calc(var(--w-menu-toggle) + (var(--p-inline) * 2)) !important;
+          margin-left: calc(var(--p-inline) * -1);
+        }
       }
     }
   }

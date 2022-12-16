@@ -2,6 +2,8 @@
 // // // contributions // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #contributions {
+  --w-items: min(100%, 35em);
+
   > section {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
@@ -19,7 +21,7 @@
     }
     &-content {
       --bg: #2B4DDF;
-      --w: min(100%, 30em);
+      --w: var(--w-items);
       aspect-ratio: 2.2 / 1;
       
       background-image: url(../../sources/images/contributions-decoration.png) !important;
@@ -38,8 +40,10 @@
     .v-card {
       $mobile: 400px;
       --gtc: 1fr 1fr;
+      --w: var(--w-items);
+      margin-inline: auto;
       position: relative;
-      @include media(max, 500px) {--gtc: max(140px, 15em) 1fr}
+      @include media(max, 600px) {--gtc: max(140px, 15em) 1fr}
       @include media(max, $mobile) {
         --gtc: 1fr;
         gap: 10px;
