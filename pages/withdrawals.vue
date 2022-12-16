@@ -19,7 +19,7 @@
           <h2 class="p tup font1">{{item.price}} usdt</h2>
         </div>
         
-        <v-sheet id="container-h2" color="transparent" class="jcenter" style="max-width: 10em !important">
+        <v-sheet id="container-h2" color="transparent" class="jcenter">
           <h2 class="p tup font1" style="--fs: max(12px, 1em); width: 110px">{{item.state}}</h2>
         </v-sheet>
       </div>

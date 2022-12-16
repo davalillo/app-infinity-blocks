@@ -25,7 +25,11 @@
 
   --spacing: 5px;
   .anchorlineb {
+    flex: 1 1 !important;
     padding-right: var(--spacing);
-    & + #container-h2 {padding-left: var(--spacing)}
+    & + #container-h2 {
+      max-width: 10em !important;
+      padding-left: var(--spacing);
+    }
   }
 }

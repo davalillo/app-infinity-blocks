@@ -62,9 +62,9 @@
           <v-icon size="clamp(max(18px, 2em), 3vw, min(41.61px, 3em))">mdi-menu</v-icon>
         </v-btn>
 
-        <nuxt-link class="menu-toggle-logo align" to="/">
+        <button class="menu-toggle-logo" @click="$router.push(localePath('/'))">
           <img src="~/assets/sources/logos/logo-header.svg" alt="logo">
-        </nuxt-link>
+        </button>
 
         <div class="center" style="gap: 10px">
           <span class="hspan" style="--fs: 17px">IDIOMA:</span>
@@ -100,7 +100,9 @@
         </div>
 
         <v-list color="transparent">
-          <v-list-item v-for="(item, i) in dataToggle" :key="i" v-ripple="{class: 'activeRipple'}" @click.prevent="">
+          <v-list-item
+            v-for="(item, i) in dataToggle" :key="i" v-ripple="{class: 'activeRipple'}"
+            @click.prevent="$router.push(localePath(item.to))">
             <v-list-item-title class="acenter tup font3" style="gap: 5px; --fw: 400">
               <img
                 :src="require(`~/assets/sources/icons/${item.icon}.svg`)" :alt="`${item.icon} icon`" class="aspect"
@@ -128,7 +130,7 @@ export default {
       // drawer: false,
       menuToggle: false,
       dataToggle: [
-        { name: "configuración", icon: "settings", to: "" },
+        { name: "configuración", icon: "settings", to: "/settings" },
         { name: "tutoriales", icon: "tutorial", to: "" },
         { name: "web oficial", icon: "web", to: "" },
         { name: "contactanos", icon: "contact", to: "" },

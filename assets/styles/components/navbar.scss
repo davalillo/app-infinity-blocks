@@ -104,8 +104,8 @@
   padding-inline: var(--p-inline);
   padding-block: 30px;
   @include media(min, small) {padding-block: 40px}
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   background-color: var(--primary);
   transform: translateY(-12px);
   @include media(max, 904px) {transform: translate(-12px, -12px)}
@@ -158,8 +158,8 @@
   &-logo {
     width: 70% !important;
     max-width: 70% !important;
-    margin-inline: auto;
-    img {--w: 100% !important}
+    margin-inline: auto !important;
+    img {width: 100% !important}
   }
 
   * {font-weight: 600 !important}
