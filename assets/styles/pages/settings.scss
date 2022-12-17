@@ -32,7 +32,8 @@
     label {
       --fw: 900;
       --fs: max(16px, 1.3em);
-      text-indent: 1ch;
+      // text-indent: 1ch;
+      padding-left: 1ch;
     }
     .v-btn.btn {
       --bg: var(--active);
@@ -66,21 +67,17 @@
       width: min(100%, 30em);
       
       h3 {
-        text-indent: 1ch;
+        // text-indent: 1ch;
+        padding-left: 1ch;
         text-align: start;
-        gap: 5px;
-        @include media(max, 360px) {
-          flex-direction: column;
-          align-items: flex-start
-        };
+        row-gap: 5px;
+        flex-wrap: wrap;
       }
       h3 span {
         --fw: 100;
         font-size: .7em;
         opacity: .5;
         font-style: italic;
-        text-indent: 0;
-        @include media(max, 360px) {margin-left: auto};
       }
     }
   }

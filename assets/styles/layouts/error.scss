@@ -31,16 +31,6 @@
         }
       }
       span {line-height: 1 !important}
-      .v-btn {
-        width: clamp(8em, 20vw, 20em);
-        height: clamp(2em, 5vw, 4.75em);
-        background: $primary;
-        border: 2px solid $primary;
-        border-radius: 50.6557px;
-        span {
-          color: $clr-text-btn;
-        }
-      }
     }
   }
 }

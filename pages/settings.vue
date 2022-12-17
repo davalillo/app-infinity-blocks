@@ -347,7 +347,7 @@
 
 
         <div style="width: min(100%, 30em)">
-          <h3 class="p" style="text-indent: 1ch; text-align: start">SEGURIDAD</h3>
+          <h3 class="p" style="padding-left: 1ch; text-align: start">SEGURIDAD</h3>
         </div>
         
         <v-card class="card divcol center" style="gap: 12px">

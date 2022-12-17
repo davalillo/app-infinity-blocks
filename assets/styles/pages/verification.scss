@@ -22,19 +22,112 @@
     padding-inline: var(--margin-global);
 
     .window-content {
-      width: min(100%, 37em);
+      --width: min(100%, 37em);
+      width: var(--width);
       margin-inline: auto;
     }
 
+    h2 {
+      --fs: max(18px, 2.3em);
+      text-align: center;
+    }
+    h3 {
+      text-align: center;
+      --fw: 900;
+      --fs: max(16px, 1.5em);
+    }
     label {
       --fw: 900;
       --fs: max(16px, 1.3em);
-      text-indent: 1ch;
+      // text-indent: 1ch;
+      padding-left: 1ch;
     }
     .v-btn.btn {
       --bg: var(--primary);
       --fs: max(15px, 1.4em);
       --w: max-content;
+    }
+    ul {
+      padding-left: 0;
+      list-style: none;
+      li {
+        opacity: .8;
+        font-size: max(14px, 1.15em);
+        line-height: 1.1;
+        & + li {margin-top: .5ch}
+        a {
+          --fw: 100;
+          opacity: .65;
+          font-style: italic;
+        }
+      }
+    }
+
+    .v-input {
+      --bg: var(--primary);
+    }
+    .container-label {
+      label {
+        text-align: start;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      label span {
+        --fw: 100;
+        font-size: .8em;
+        opacity: .6;
+        font-style: italic;
+      }
+    }
+
+    .v-otp-input {
+      .v-input__slot {
+        background-color: #fff !important;
+        width: clamp(2.5em, 5vw, 5.3125em);
+        aspect-ratio: 1 / .95;
+        input {
+          color: #000 !important;
+          font-size: 19px !important;
+          font-weight: 700 !important;
+        }
+      }
+    }
+
+    .v-file-input {
+      max-width: 50% !important;
+      .v-input__slot {
+        aspect-ratio: 1.6 / 1 !important;
+        padding-inline: 0 !important;
+      }
+      .v-text-field__slot {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .v-label {
+        @include media(max, 700px) {font-size: var(--resizer)}
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        height: 100% !important;
+        width: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: auto !important;
+        padding: 0 !important;
+        opacity: .7;
+        img {--w: 1.7em}
+        span.hspan {
+          --fs: max(15px, 1.1em);
+          --fw: 900;
+        }
+      }
+    }
+
+    .v-card {
+      --bg: var(--accent);
     }
   }
 }

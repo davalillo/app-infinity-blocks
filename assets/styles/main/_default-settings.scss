@@ -715,7 +715,10 @@ img:not(.not_html, .not) {
   
   // input statements //
   &.v-input--is-focused:not(.not_focus, .not_statement) .v-input__slot {--ol: 2px solid rgba(255, 255, 255, 0.3)}
-  &.error--text:not(.not_error, .not_statement) .v-input__slot {--ol: 2px solid var(--error); --bg: var(--error)}
+  &.error--text:not(.not_error, .not_statement) .v-input__slot {
+    --ol: 4px solid var(--error);
+    // --bg: var(--error)
+  }
   &.v-input--is-disabled:not(.not_disabled, .not_statement) {opacity: var(--o-disabled); pointer-events: none}
 }
 
