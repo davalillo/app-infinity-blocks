@@ -2,9 +2,6 @@
 // // // login // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #login {
-  background: center no-repeat fixed url(../../sources/images/bg-app.png);
-  background-size: cover;
-
   .v-main__wrap {
     @include media(max, small) {--margin-global: 8em}
     @include media(max, 600px) {--margin-global: 5em}

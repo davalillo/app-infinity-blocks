@@ -2,24 +2,28 @@
 // // // settings // // // 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #settings {
-  background: center no-repeat fixed url(../../sources/images/bg-app.png);
-  background-size: cover;
-  
+  padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important;
+
   & > * {
     font-size: var(--resizer);
-  }
-  .v-main {
-    padding-block: calc(var(--h-navbar) + 20px) var(--h-footer, 80px) !important;
-    & > * {
-      @include media(max, small) {
-        font-size: var(--resizer-mobile)
-      }
+    @include media(max, small) {
+      font-size: var(--resizer-mobile)
     }
   }
 
   &-content {
     @include parent;
     padding-inline: var(--margin-global);
+
+    &--button-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      @include media(max, 600px) {
+        top: -55px;
+        left: 10px;
+      }
+    }
 
     h2 {
       --fs: max(18px, 2.5em);

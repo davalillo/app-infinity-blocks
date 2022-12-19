@@ -129,6 +129,11 @@ div.v-card::before {background: transparent !important}
 }
 
 body {background: var(--bg-ap)}
+.v-application {
+  background: center no-repeat fixed var(--bg) !important;
+  background-size: cover !important;
+}
+
 * {caret-color: var(--caret, var(--primary)) !important}
 ::selection {
   background-color: rgb(202, 50, 205);

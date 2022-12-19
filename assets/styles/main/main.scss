@@ -17,6 +17,10 @@
 
 ///////////////////// global ///////////////////////
 
+.v-application:not(#layout) {
+  background-image: url(../../sources/images/bg-app.png) !important;
+}
+
 // global width item cards
 :root {
   --w-items: min(100%, 35em);
