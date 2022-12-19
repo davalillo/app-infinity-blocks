@@ -3,7 +3,7 @@
     <template v-if="!activate">
       <img id="advisers-logo" src="~/assets/sources/logos/logo.svg" alt="logo">
 
-      <v-card class="card divcol center tcenter bg-image" style="--bg: #2B4DDF; --w: min(100%, 30em); gap: 2em">
+      <v-card class="card divcol center tcenter bg-image" style="--bg: #2B4DDF; --w: var(--w-items); gap: 2em">
         <div class="divcol" style="gap: .3em">
           <h2 class="p font1" style="--fw: 600">MEMBRESÍA DE ASESOR</h2>
           <span class="hspan" style="--fw: 100; --fs: max(16px, 1.5em)">247 USDT / AL AÑO</span>
@@ -14,7 +14,7 @@
         </v-btn>
       </v-card>
 
-      <v-card class="card divcol center tcenter relative bg-image" style="--bg: #868686; --w: min(100%, 30em); gap: .5em">
+      <v-card class="card divcol center tcenter relative bg-image" style="--bg: #868686; --w: var(--w-items); gap: .5em">
         <img id="premium-decoration" src="~/assets/sources/icons/premium-coin.svg" alt="premium coin" class="aspect">
 
         <h2 class="p font1" style="--fw: 600">MEMBRESÍA DE ASESOR PREMIUM</h2>
@@ -27,7 +27,7 @@
 
 
     <template v-else>
-      <v-card class="card divcol center tcenter" style="--bg: #2B4DDF; --w: min(100%, 30em); gap: 1em">
+      <v-card class="card divcol center tcenter" style="--bg: #2B4DDF; --w: var(--w-items); gap: 1em">
         <div class="divcol" style="gap: .3em">
           <h2 class="p font1" style="--fw: 600">MEMBRESÍA DE ASESOR</h2>
           <span class="hspan font3" style="--fw: 100; --fs: max(16px, 1.2em)">225 DÍAS RESTANTES</span>
@@ -40,7 +40,7 @@
         </v-btn>
       </v-card>
 
-      <v-card class="card divcol center tcenter" style="--bg: var(--primary); --w: min(100%, 30em); gap: .5em">
+      <v-card class="card divcol center tcenter" style="--bg: var(--primary); --w: var(--w-items); gap: .5em">
         <div class="divcol" style="gap: .3em">
           <h2 class="p font1" style="--fw: 600">BONO CARRERA</h2>
           <span class="hspan font3" style="--fw: 100; --fs: max(16px, 1.2em)">3000/4000</span>
@@ -58,7 +58,7 @@
         </v-btn>
       </v-card>
 
-      <v-card class="card divcol center tcenter" style="--bg: var(--accent); --w: min(100%, 30em); gap: .8em">
+      <v-card class="card divcol center tcenter" style="--bg: var(--accent); --w: var(--w-items); gap: .8em">
         <div class="divcol" style="gap: .3em">
           <h2 class="p font1 mb-1" style="--fw: 600">BONO DIRECTO</h2>
           <h3 class="p" style="--fw: 100">1250 USDT</h3>
@@ -69,7 +69,7 @@
         </v-btn>
       </v-card>
 
-      <v-card class="card divcol center tcenter" style="--bg: var(--primary); --w: min(100%, 30em); gap: .8em">
+      <v-card class="card divcol center tcenter" style="--bg: var(--primary); --w: var(--w-items); gap: .8em">
         <div class="divcol" style="gap: .3em">
           <h2 class="p font1 mb-1" style="--fw: 600">BONO RESIDUAL</h2>
           <h3 class="p" style="--fw: 100">0 USDT</h3>

@@ -17,6 +17,11 @@
 
 ///////////////////// global ///////////////////////
 
+// global width item cards
+:root {
+  --w-items: min(100%, 35em);
+}
+
 // input selects
 @layer layout {
   .v-input.v-select * {color: #fff !important}

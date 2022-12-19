@@ -60,11 +60,11 @@
     }
     .v-card {
       --bg: var(--accent);
-      --w: min(100%, 30em);
+      --w: var(--w-items);
     }
 
     #beneficiaries {
-      width: min(100%, 30em);
+      width: var(--w-items);
       
       h3 {
         // text-indent: 1ch;

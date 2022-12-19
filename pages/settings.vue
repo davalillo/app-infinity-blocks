@@ -25,15 +25,15 @@
             style="display: none"
             @change="avatarPreview()"
           ></v-file-input>
-          <v-badge avatar offset-x="30px" offset-y="50px">
+          <v-badge avatar offset-x="40px" offset-y="70px">
             <img
               :src="avatarImg ? avatarImg : require('~/assets/sources/images/avatar-profile.png')" alt="avatar" class="aspect my-2"
-              style="--w: 14em; border-radius: 50% !important; --p: 1px; --b: 0.25em solid #fff; --of: cover"
+              style="--w: 16em; border-radius: 50% !important; --p: 1px; --b: 0.25em solid #fff; --of: cover"
             >
             <template #badge>
               <v-btn icon>
                 <label for="avatar-preview">
-                  <img src="~/assets/sources/icons/edit.svg" alt="edit avatar" style="--w: clamp(2em, 5vw, 2.7em)">
+                  <img src="~/assets/sources/icons/edit.svg" alt="edit avatar" style="--w: clamp(2em, 5vw, 2.9em)">
                 </label>
               </v-btn>
             </template>
