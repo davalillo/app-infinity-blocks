@@ -10,11 +10,10 @@
   &--top {
     background: center no-repeat url(../../sources/images/bg-app.png);
     background-size: cover;
-    @include media(min, small) {height: 32em}
     &-wrapper {
       @include parent;
       padding-inline: var(--margin-global);
-      padding-block: calc(var(--h-navbar) + 3em) 2.5em;
+      padding-block: calc(var(--h-navbar) + 20px + 50px) 3.5em;
       gap: 30px;
     }
     &-content {

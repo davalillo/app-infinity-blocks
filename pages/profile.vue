@@ -31,7 +31,7 @@
       </span>
     </div>
 
-    <v-card class="card divcol center tcenter tup" style="--bg: #2B4DDF; --w: min(100%, 24em); gap: 1em">
+    <v-card class="card divcol center tcenter tup" style="--bg: #2B4DDF; --w: var(--w-items); gap: 1em">
       <div class="divcol center">
         <h2 class="p font1 mb-1" style="--fw: 600; --fs: max(21px, 1.5em)">APORTACIÓN</h2>
         <h3 class="p" style="--fw: 100; --fs: max(17px, 1.2em)">ACTIVA</h3>
