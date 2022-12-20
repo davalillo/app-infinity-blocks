@@ -119,6 +119,14 @@
             <img :src="require(`~/assets/sources/icons/${item.icon}.svg`)" :alt="`${item.icon} icon`" style="--w: 30px">
           </v-btn>
         </div>
+
+        <v-btn
+          class="btn absolute"
+          style="--fs: max(16px, 1.3em); --bg: var(--active); --t: auto; --w: calc(100% - var(--p-inline) * 2); --b: 60px; --p: .4em"
+          @click="logOut()"
+        >
+          log out
+        </v-btn>
       </div>
     </v-menu>
   </div>
@@ -146,6 +154,10 @@ export default {
     };
   },
   methods: {
+    logOut() {
+      localStorage.clear()
+      this.$router.go()
+    },
   },
 };
 </script>

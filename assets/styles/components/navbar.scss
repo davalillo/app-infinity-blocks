@@ -117,7 +117,7 @@
     flex-direction: column;
     
     // lines
-    > :first-child + * ~ * {
+    > :first-child + * ~ *:not(:last-child) {
       --spacing: 20px;
       
       margin-top: var(--spacing);
