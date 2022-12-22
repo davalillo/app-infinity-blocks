@@ -31,7 +31,7 @@
               ></v-otp-input>
 
               <v-btn class="btn" style="--fs: max(13px, 1.6em)" @click="verificationCode()">
-                VERIFICAR
+                Verificar
               </v-btn>
             </div>
 
@@ -137,7 +137,7 @@
             <v-card class="card divcol center tcenter" style="gap: 16px">
               <ul>
                 <li>1. Descarga el formulario de verificación que encontrarás en el botón a continuación.</li>
-                <li>2. Rellénalo por completo y énvialo a la dirección <a>verificacion@infinityblocks.tech</a></li>
+                <li>2. Rellénalo por completo y envíalo a la dirección <a>verificacion@infinityblocks.tech</a></li>
                 <li>3. Una vez aprobada tu solicitud de verificación recibirás un email de confirmación.</li>
               </ul>
 

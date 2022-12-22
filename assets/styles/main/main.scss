@@ -17,6 +17,19 @@
 
 ///////////////////// global ///////////////////////
 
+// pickers
+@layer layout {
+.v-picker--date {
+  .v-date-picker-table, .v-picker__body {background-color: var(--active) !important}
+    .v-btn--active {background-color: var(--secondary) !important}
+    .primary--text {color: var(--secondary) !important}
+  }
+}
+.headerless {
+  .v-picker__title, .v-date-picker-header {display: none !important}
+}
+
+// background aplication
 .v-application:not(#layout) {
   background-image: url(../../sources/images/bg-app.png) !important;
 }

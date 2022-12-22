@@ -10,7 +10,7 @@
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
         
-        <label for="go-back" class="hspan" style="--fw: 500">Go back</label>
+        <label for="go-back" class="hspan" style="--fw: 500">Volver</label>
       </div>
 
       <h2 class="p">CONFIGURACIÓN</h2>
@@ -39,7 +39,7 @@
         </v-badge>
         
         <h3 class="p mb-1" style="--fw: 400">pedroperez01</h3>
-        <span style="opacity: .6">pedroperez@gmail.com</span>
+        <span class="hspan" style="opacity: .6; --fs: max(15px, 1.2em)">pedroperez@gmail.com</span>
       </v-card>
 
 
@@ -75,37 +75,85 @@
         <div class="divcol" style="gap: inherit">
           <label for="birthday-profile">Fecha De Nacimiento</label>
           <div v-if="!existDataUser" id="container-birthday" class="fnowrap" style="gap: 10px">
-            <v-text-field
-              :id="!birthday_day && !birthday_month && !birthday_year ? 'birthday-profile' : ''"
-              ref="birthday_day"
-              v-model="birthday_day"
-              placeholder="Día"
-              type="number"
-              solo hide-details
-              class="surnames"
-              @keyup="switchBetweenInput($refs.birthday_day, 1, $event)"
-            ></v-text-field>
-            
-            <v-text-field
-              :id="birthday_day && !birthday_month && !birthday_year ? 'birthday-profile' : ''"
-              ref="birthday_month"
-              v-model="birthday_month"
-              placeholder="Mes"
-              type="number"
-              solo hide-details
-              class="surnames"
-              @keyup="switchBetweenInput($refs.birthday_month, 2, $event)"
-            ></v-text-field>
-            
-            <v-text-field
-              :id="birthday_day && birthday_month && !birthday_year ? 'birthday-profile' : ''"
-              ref="birthday_year"
-              v-model="birthday_year"
-              placeholder="Año"
-              type="number"
-              solo hide-details
-              class="surnames"
-            ></v-text-field>
+            <v-menu v-model="menuDay" bottom>
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  :id="!birthday_day && !birthday_month && !birthday_year ? 'birthday-profile' : ''"
+                  ref="birthday_day"
+                  v-model="onlyDay"
+                  placeholder="Día"
+                  type="number"
+                  solo hide-details
+                  hide-spin-buttons
+                  readonly
+                  class="surnames"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              
+              <v-date-picker
+                v-model="birthday_day"
+                type="date"
+                class="headerless"
+                color="var(--secondary)"
+                event-color="var(--secondary)"
+                @change="menuDay = false"
+              ></v-date-picker>
+            </v-menu>
+
+            <v-menu v-model="menuMonth" bottom>
+              <template #activator="{ on, attrs}">
+                <v-text-field
+                  :id="birthday_day && !birthday_month && !birthday_year ? 'birthday-profile' : ''"
+                  ref="birthday_month"
+                  v-model="onlyMonth"
+                  placeholder="Mes"
+                  type="number"
+                  solo hide-details
+                  hide-spin-buttons
+                  readonly
+                  class="surnames"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              
+              <v-date-picker
+                v-model="birthday_month"
+                type="month"
+                class="headerless"
+                @change="menuMonth = false"
+              ></v-date-picker>
+            </v-menu>
+
+            <v-menu ref="menuYear" v-model="menuYear" bottom>
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  :id="birthday_day && birthday_month && !birthday_year ? 'birthday-profile' : ''"
+                  ref="birthday_year"
+                  v-model="onlyYear"
+                  placeholder="Año"
+                  type="number"
+                  solo hide-details
+                  hide-spin-buttons
+                  readonly
+                  class="surnames"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              
+              <v-date-picker
+                ref="yearPicker"
+                v-model="birthday_year"
+                class="headerless"
+                no-title
+                scrollable
+                reactive
+                @click:year="updateYear(birthday_year)"
+              ></v-date-picker>
+            </v-menu>
           </div>
           
           <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">04/12/1992</span>
@@ -215,7 +263,7 @@
 
 
       <div id="beneficiaries">
-        <h3 class="p aend">BENEFICIARIOS
+        <h3 class="p" style="gap: 5px">BENEFICIARIOS
           <span>(Hasta 3 personas)</span>
         </h3>
       </div>
@@ -315,13 +363,14 @@
           
           <div class="divcol" style="gap: calc(var(--gap) / 3)">
             <label for="relationship-beneficiary">Parentesco</label>
-            <v-text-field
+            <v-select
               id="relationship-beneficiary"
               v-model="formBeneficiaries.relationship"
+              :items="dataRelationship"
               placeholder="Ingresar Parentesco"
               solo hide-details
               :rules="rules.required"
-            ></v-text-field>
+            ></v-select>
           </div>
           
           <div class="divcol" style="gap: calc(var(--gap) / 3)">
@@ -338,14 +387,20 @@
             ></v-select>
           </div>
           
-          <v-btn class="btn align" @click="saveBeneficiary()">
-            Guardar
-          </v-btn>
+          <div class="center align" style="gap: 10px">
+            <v-btn class="btn" @click="saveBeneficiary()">
+              Guardar
+            </v-btn>
+            
+            <v-btn class="btn" style="--bg: var(--secondary)" @click="cancelBeneficiary()">
+              Cancelar
+            </v-btn>
+          </div>
         </v-form>
       </v-card>
 
 
-      <div style="width: min(100%, 30em)">
+      <div id="security" style="width: min(100%, 30em)" class="center">
         <h3 class="p" style="padding-left: 1ch; text-align: start">SEGURIDAD</h3>
       </div>
       
@@ -428,6 +483,12 @@ export default {
           profitPercentage: "40%",
         },
       ],
+      dataRelationship: [
+        "padre/madre", "hermano/a", "hijo/a", "sobrino/a", "abuelo/a", "otro"
+      ],
+      menuDay: false,
+      menuMonth: false,
+      menuYear: false,
     }
   },
   head() {
@@ -437,19 +498,27 @@ export default {
     }
   },
   computed: {
-    // need do this <-------------------
-    birthday: {
-      get() {
-        return this.formProfile.birthday
-      }
-    }
+    onlyDay() {
+      return this.birthday_day?.split("-")[2] || undefined
+    },
+    onlyMonth() {
+      return this.birthday_month?.split("-")[1] || undefined
+    },
+    onlyYear() {
+      return this.birthday_year?.split("-")[0] || undefined
+    },
+    fullBirthday() {
+      return `${this.onlyDay}-${this.onlyMonth}-${this.onlyYear}`
+    },
+  },
+  watch: {
+    menuYear(val) {
+      setTimeout(() => {
+        if (val) this.updateYear()
+      }, 0);
+    },
   },
   mounted() {
-    // trying limit numbers <--------------
-    if (this.$refs.birthday_day) this.$refs.birthday_day.$el.querySelector('input').max = 31
-    if (this.$refs.birthday_month) this.$refs.birthday_month.$el.querySelector('input').max = 12
-    if (this.$refs.birthday_year) this.$refs.birthday_year.$el.querySelector('input').max = 9999
-    // trying limit numbers <--------------
   },
   methods: {
     avatarPreview() {
@@ -457,11 +526,6 @@ export default {
     },
     birthdaySelection(day, month, year) {
       return 2
-    },
-    switchBetweenInput(ref, i, event) {
-      if (event.key === 'Tab' || event.key === 'Shift') return;
-      const inputAdyacent = document.querySelectorAll("#container-birthday .surnames")[i].querySelector("input")
-      if (ref.value.length >= 2) inputAdyacent.focus()
     },
     saveBeneficiary() {
       if (!this.$refs.formBeneficiaries.validate()) return alert("need fill all fields");
@@ -472,6 +536,16 @@ export default {
     },
     deleteBeneficiary() {
       console.log("delete")
+    },
+    cancelBeneficiary() {
+      this.addBeneficiariesState = false
+      Object.keys(this.formBeneficiaries).forEach(e => {
+        this.formBeneficiaries[e] = undefined
+      })
+      this.formBeneficiaries.phonePrefix = "+593"
+    },
+    updateYear() {
+      this.$refs.yearPicker.internalActivePicker = 'YEAR'
     },
   }
 };

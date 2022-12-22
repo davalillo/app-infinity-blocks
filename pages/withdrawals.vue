@@ -24,8 +24,8 @@
         </v-sheet>
       </div>
       
-      <span v-if="item.date" class="hspan" style="--fw: bold; --fs: max(14px, 1.2em); text-shadow: 2px 2px #000">{{item.date}}</span>
-      <v-btn v-else class="btn" style="--p: 8px 1.5em; --bg: var(--accent)">RETIRAR</v-btn>
+      <span v-if="item.date" class="hspan" style="--fw: bold; --fs: max(14px, 1.2em)">{{item.date}}</span>
+      <v-btn v-else class="btn" style="--p: 8px 1.5em; --bg: var(--accent)">Retirar</v-btn>
     </v-card>
 
     <h2 class="p htitle" style="--fs: max(16px, 2em)">

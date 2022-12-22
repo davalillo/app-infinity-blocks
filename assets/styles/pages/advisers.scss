@@ -3,8 +3,12 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #advisers {
   @include parent;
-  padding-top: 50px;
+  padding-top: 20px;
   padding-inline: var(--margin-global);
+
+  &.activate > * {
+    font-size: clamp(13px, 1vw, 16px) !important;
+  }
 
   &-logo {
     --w: 50px;
@@ -47,21 +51,21 @@
         width: var(--size);
         height: var(--size);
         position: relative;
-        &::after {
-          content: var(--thumb-text);
-          position: absolute;
-          left: 2px;
-          top: calc(var(--size) / 4) !important;
-          color: #fff;
-          font-size: 13px;
-          font-weight: 400;
-        }
-        ::before, ::after {display: none !important}
         .v-slider__thumb {
           background: center no-repeat url(../../sources/images/progress-thumb-purple.png) !important;
           background-size: cover !important;
           width: 100% !important;
           height: 100% !important;
+          &::before {display: none !important}
+          // percent text
+          &::after {
+            content: var(--thumb-text) !important;
+            display: grid !important;
+            place-items: center !important;
+            color: #fff !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+          }
         }
       }
       

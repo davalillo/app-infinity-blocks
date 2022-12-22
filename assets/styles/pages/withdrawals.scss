@@ -3,7 +3,7 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #withdrawals {
   @include parent;
-  padding-top: 50px;
+  padding-top: 20px;
   padding-inline: var(--margin-global);
 
   h2 {
@@ -30,6 +30,13 @@
     & + #container-h2 {
       max-width: 10em !important;
       padding-left: var(--spacing);
+    }
+  }
+
+
+  .v-data-table {
+    th {
+      font-weight: bold !important;
     }
   }
 }

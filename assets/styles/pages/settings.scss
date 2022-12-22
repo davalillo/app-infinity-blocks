@@ -25,6 +25,10 @@
       }
     }
 
+    > h3, #security > h3, #beneficiaries > h3 {
+      margin-top: 1em;
+    }
+
     h2 {
       --fs: max(18px, 2.5em);
     }
@@ -75,6 +79,9 @@
         padding-left: 1ch;
         text-align: start;
         row-gap: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
         flex-wrap: wrap;
       }
       h3 span {

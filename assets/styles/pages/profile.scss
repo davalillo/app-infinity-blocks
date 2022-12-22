@@ -3,7 +3,7 @@
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 #profile {
   @include parent;
-  padding-top: 50px;
+  padding-top: 20px;
   padding-inline: var(--margin-global);
 
   > div:first-child {

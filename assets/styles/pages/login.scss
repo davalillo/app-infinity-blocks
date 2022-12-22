@@ -18,6 +18,13 @@
     }
   }
 
+  .v-input {
+    --fs: clamp(.9em., 1vw, 1.1em);
+    span, .v-icon {
+      color: #fff !important;
+    }
+  }
+
   .v-window-item > section {
     display: flex;
     flex-direction: column;

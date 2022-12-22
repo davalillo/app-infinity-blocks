@@ -13,7 +13,7 @@
     &-wrapper {
       @include parent;
       padding-inline: var(--margin-global);
-      padding-block: calc(var(--h-navbar) + 20px + 50px) 3.5em;
+      padding-block: calc(var(--h-navbar) + 20px + 20px) 3.5em;
       gap: 30px;
     }
     &-content {

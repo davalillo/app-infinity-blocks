@@ -1,5 +1,5 @@
 <template>
-  <div id="advisers" class="divcol center" :style="!activate ? 'gap: 3.5em' : 'gap: 1.8em'">
+  <div id="advisers" class="divcol center" :style="!activate ? 'gap: 3.5em' : 'gap: 1.8em'" :class="{activate: !activate}">
     <template v-if="!activate">
       <img id="advisers-logo" src="~/assets/sources/logos/logo.svg" alt="logo">
 
@@ -19,9 +19,9 @@
 
         <h2 class="p font1" style="--fw: 600">MEMBRESÍA DE ASESOR PREMIUM</h2>
         
-        <v-btn class="btn" style="--bg: hsl(263, 70%, 20%); --br: 0.5em; --fw: 400; --p: .3em .5em">PRÓXIMAMENTE</v-btn>
+        <v-btn class="btn" style="--bg: hsl(263, 70%, 20%); --br: 0.5em; --fw: 400; --p: .3em .5em">Próximamente</v-btn>
         
-        <span class="hspan font3" style="--fs: max(14px, 1.125em); opacity: .9">Incluye certificación como Asesor Cripto Descentralizado</span>
+        <span class="hspan font3" style="--fs: max(14px, 1.125em); opacity: .9">Incluye certificación como<br>Asesor Cripto Descentralizado</span>
       </v-card>
     </template>
 
@@ -81,7 +81,7 @@
       </v-card>
 
       <v-btn class="btn mt-4 center font1" style="--g: 8px; --bg: #2B4DDF; --p: .5em 1.5em">
-        MI NEGOCIO <img src="~/assets/sources/icons/download.svg" alt="download icon" style="--w: .75em">
+        Mi Negocio <img src="~/assets/sources/icons/download.svg" alt="download icon" style="--w: .75em">
       </v-btn>
     </template>
   </div>

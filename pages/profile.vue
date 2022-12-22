@@ -26,7 +26,19 @@
       <span v-else class="hspan mt-0" style="word-break: break-all; --fs: max(15px, 1.15em)">
         Verifica tu cuenta, por favor
         <sup>
-          <img src="~/assets/sources/icons/warning.svg" alt="verify alert" class="aspect" style="--w: clamp(1.5em, 1.7vw, 1.7em)">
+          <v-tooltip top nudge-top="10px" color="#fff" content-class="custome-tooltip">
+            <template #activator="{ on, attrs }">
+              <img
+                src="~/assets/sources/icons/warning.svg" alt="verify alert" class="aspect pointer"
+                style="--w: clamp(1.5em, 1.7vw, 1.7em)"
+                v-bind="attrs" v-on="on" @click="$router.push(localePath('/settings'))"
+              >
+            </template>
+            
+            <span>
+              Ir a la configuración
+            </span>
+          </v-tooltip>
         </sup>
       </span>
     </div>

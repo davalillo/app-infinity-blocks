@@ -122,10 +122,11 @@
 
         <v-btn
           class="btn absolute"
-          style="--fs: max(16px, 1.3em); --bg: var(--active); --t: auto; --w: calc(100% - var(--p-inline) * 2); --b: 60px; --p: .4em"
+          style="--fs: max(16px, 1.3em); --bg: var(--active); --t: auto; --w: calc(100% - var(--p-inline) * 2); --b: 60px; --p: .4em; --g: 5px"
           @click="logOut()"
         >
-          log out
+          Cerrar Sesión
+          <v-icon size="1.05em">mdi-logout-variant</v-icon>
         </v-btn>
       </div>
     </v-menu>

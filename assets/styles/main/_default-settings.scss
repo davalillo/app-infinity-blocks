@@ -134,7 +134,7 @@ body {background: var(--bg-ap)}
   background-size: cover !important;
 }
 
-* {caret-color: var(--caret, var(--primary)) !important}
+* {caret-color: var(--caret, #fff) !important}
 ::selection {
   background-color: rgb(202, 50, 205);
   color: #fff;
@@ -522,7 +522,7 @@ img:not(.not_html, .not) {
   --h: 2px;
 
   .v-slider__track {
-    &-container {border-radius: var(--br);height: var(--h); overflow: hidden}
+    &-container {border-radius: var(--br); height: var(--h); overflow: hidden}
   }
   
   .v-slider__thumb-label-container {

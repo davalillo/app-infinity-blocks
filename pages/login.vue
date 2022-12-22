@@ -1,6 +1,6 @@
 <template>
   <v-main id="login">
-    <v-window v-model="windowStep">
+    <v-window v-model="windowStep" touchless>
       <!-- login window -->
       <v-window-item id="login-window" :value="1">
         <section>
@@ -27,11 +27,18 @@
               <v-text-field
                 id="password-login"
                 v-model="formLogin.password"
-                type="password"
+                :type="showLogin ? 'number' : 'password'"
                 :rules="rules.required"
                 placeholder="Ingresa tu contraseña"
                 hide-details solo
-              ></v-text-field>
+                hide-spin-buttons
+              >
+                <template #append>
+                  <v-icon size="1.3em" @click="showLogin = !showLogin">
+                    mdi-eye{{showLogin ? '' : '-off'}}
+                  </v-icon>
+                </template>
+              </v-text-field>
             </div>
             
             <v-btn
@@ -58,7 +65,9 @@
       <!-- register window -->
       <v-window-item id="register-window" :value="2">
         <section>
-          <img src="~/assets/sources/logos/logo-header.svg" alt="logo" class="mb-10" style="--w: max(190px, 17em)">
+          <button class="mb-10" @click="windowStep = 1">
+            <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
+          </button>
 
           <v-form ref="formRegister" class="fill_w divcol" style="gap: 1em">
             <div class="divcol" style="gap: .5em">
@@ -73,10 +82,20 @@
             
             <div class="divcol" style="gap: .5em">
               <label class="relative" for="username-register">USUARIO <sup>*</sup>
-                <img
-                  src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
-                  style="--w: .9em; --l: auto; --top: auto; --b: -15px"
-                >
+                <v-tooltip top nudge-top="10px" color="#fff" content-class="custome-tooltip">
+                  <template #activator="{ on, attrs }">
+                    <img
+                      src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
+                      style="--w: max(16px, .9em); --l: auto; --top: auto; --b: -5px"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                  </template>
+                  
+                  <span>
+                    Ingresar nombre de usuario
+                  </span>
+                </v-tooltip>
               </label>
               <v-text-field
                 id="username-register"
@@ -89,25 +108,43 @@
             <div class="divcol" style="gap: inherit">
               <div class="divcol" style="gap: .5em">
                 <label class="relative" for="password-register">CONTRASEÑA <sup>*</sup>
-                  <img
-                    src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
-                    style="--w: .9em; --l: auto; --top: auto; --b: -15px"
-                  >
+                  <v-tooltip top nudge-top="10px" color="#fff" content-class="custome-tooltip">
+                    <template #activator="{ on, attrs }">
+                      <img
+                        src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
+                        style="--w: max(16px, .9em); --l: auto; --top: auto; --b: -5px"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                    </template>
+                    
+                    <span>
+                      Debe incluir mayúsculas, minúsculas, números y mínimo 8 carácteres
+                    </span>
+                  </v-tooltip>
                 </label>
                 <v-text-field
                   :id="formRegister.password ? '' : 'password-register'"
                   v-model="formRegister.password"
-                  type="password"
+                  :type="showRegister ? 'number' : 'password'"
                   solo hide-details
+                  hide-spin-buttons
                   :rules="rules.required"
-                ></v-text-field>
+                >
+                  <template #append>
+                    <v-icon size="1.3em" @click="showRegister = !showRegister">
+                      mdi-eye{{showRegister ? '' : '-off'}}
+                    </v-icon>
+                  </template>
+                </v-text-field>
               </div>
               
               <v-text-field
                 :id="formRegister.password ? 'password-register' : ''"
                 v-model="passwordConfirmerRegister"
-                type="password"
+                :type="showRegister ? 'number' : 'password'"
                 solo hide-details
+                hide-spin-buttons
                 :rules="rules.confirmPasswordRegister"
               ></v-text-field>
             </div>
@@ -157,7 +194,7 @@
             <v-btn
               class="btn align mt-5" style="--bg: var(--primary)"
               @click="register()">
-              REGISTER
+              Registrar
             </v-btn>
           </v-form>
         </section>
@@ -167,7 +204,9 @@
       <!-- recover window -->
       <v-window-item id="login-window" :value="3">
         <section>
-          <img src="~/assets/sources/logos/logo-header.svg" alt="logo" class="mb-10" style="--w: max(190px, 17em)">
+          <button class="mb-10" @click="windowStep = 1">
+            <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
+          </button>
 
           <v-form
             ref="formRecover" class="card divcol"
@@ -180,7 +219,7 @@
                   <template #activator="{ on, attrs }">
                     <img
                       src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
-                      style="--w: .9em; --l: auto; --top: auto; --b: -15px"
+                      style="--w: max(16px, .9em); --l: auto; --top: auto; --b: -5px"
                       v-bind="attrs"
                       v-on="on"
                     >
@@ -194,11 +233,18 @@
               <v-text-field
                 id="password-recover"
                 v-model="formRecover.password"
-                type="password"
+                :type="showRecover ? 'number' : 'password'"
                 :rules="rules.required"
                 placeholder="Ingresa nueva contraseña"
                 hide-details solo
-              ></v-text-field>
+                hide-spin-buttons
+              >
+                <template #append>
+                  <v-icon size="1.3em" @click="showRecover = !showRecover">
+                    mdi-eye{{showRecover ? '' : '-off'}}
+                  </v-icon>
+                </template>
+              </v-text-field>
             </div>
             
             <div class="divcol" style="gap: .5em">
@@ -206,10 +252,11 @@
               <v-text-field
                 id="confirm-password-login"
                 v-model="passwordConfirmerRecover"
-                type="password"
+                :type="showRecover ? 'number' : 'password'"
                 :rules="rules.confirmPasswordRecover"
                 placeholder="Confirma contraseña"
                 hide-details solo
+                hide-spin-buttons
               ></v-text-field>
             </div>
             
@@ -263,6 +310,9 @@ export default {
           number: "+2134",
         },
       ],
+      showLogin: false,
+      showRegister: false,
+      showRecover: false,
       rules: {
         required: [(v) => !!v || "Field required"],
         email: [
