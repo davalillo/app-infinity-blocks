@@ -256,7 +256,7 @@
         
         <v-btn
           v-if="!verified" class="btn" style="--p: .3em .5em"
-          @click="$router.push(localePath('/verification'))"
+          @click="$router.push(localePath('/verification-account'))"
         >Solicitar Verificación</v-btn>
         <span v-else style="opacity: .7; word-break: break-all">0x5d2D75ED51D4A3B275f00F86632543f4010E9232</span>
       </v-card>

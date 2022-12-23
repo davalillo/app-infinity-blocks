@@ -7,7 +7,7 @@
     <Navbar ref="navbar" />
     
     <v-main class="parent" :style="isExceptionRoute ? 'padding-block: 0 !important' : ''">
-      <nuxt-child />
+      <nuxt-child data-nuxt="childs" />
     </v-main>
     <!-- <Footer ref="footer" /> -->
   </v-app>
