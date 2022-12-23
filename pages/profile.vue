@@ -31,7 +31,7 @@
               <img
                 src="~/assets/sources/icons/warning.svg" alt="verify alert" class="aspect pointer"
                 style="--w: clamp(1.5em, 1.7vw, 1.7em)"
-                v-bind="attrs" v-on="on" @click="$router.push(localePath('/settings'))"
+                v-bind="attrs" v-on="on" @click="goToSettings()"
               >
             </template>
             
@@ -82,6 +82,12 @@ export default {
     }
   },
   methods: {
+    goToSettings() {
+      this.$router.push(this.localePath('/settings'))
+      setTimeout(() => {
+        this.$scrollTo("verification-section")
+      }, 500);
+    },
   }
 };
 </script>

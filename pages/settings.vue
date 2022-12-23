@@ -247,7 +247,7 @@
       </v-card>
 
 
-      <h3 class="p">VERIFICACIÓN DE CUENTA</h3>
+      <h3 id="verification-section" class="p">VERIFICACIÓN DE CUENTA</h3>
       
       <v-card class="card divcol center tcenter" style="gap: 8px">
         <img :src="require(`~/assets/sources/icons/${verified ? 'success' : 'cancel'}.svg`)" alt="verify stat icon" style="--w: 6em">

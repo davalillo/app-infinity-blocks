@@ -94,9 +94,10 @@
     }
 
     .v-file-input {
-      max-width: 50% !important;
+      // &:not(.wallet_direction) {max-width: 50% !important}
       .v-input__slot {
         aspect-ratio: 1.6 / 1 !important;
+        @include media(max, 380px) {aspect-ratio: 2.6 / 1 !important}
         padding-inline: 0 !important;
       }
       .v-text-field__slot {
@@ -123,6 +124,12 @@
           --fs: max(15px, 1.1em);
           --fw: 900;
         }
+      }
+    }
+    .v-file-input.face-identity {
+      .v-input__slot {
+        aspect-ratio: 2.6 / 1 !important;
+        padding-inline: 0 !important;
       }
     }
 

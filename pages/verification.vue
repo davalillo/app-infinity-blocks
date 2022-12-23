@@ -42,11 +42,12 @@
           </div>
         </v-window-item>
 
+
         <v-window-item :value="2">
           <div class="window-content divcol" style="gap: 2em; --width: min(100%, 37em)">
             <h2 class="p">VERIFICACIÓN DE IDENTIDAD</h2>
             
-            <v-card class="card divcol" style="gap: 10px">
+            <v-card class="card divcol" style="gap: 15px">
               <div class="divcol" style="gap: 5px">
                 <label for="type">Tipo de Documento</label>
                 <v-select
@@ -59,13 +60,14 @@
                 ></v-select>
               </div>
 
-              <div class="divcol" style="gap: 5px">
+              <div class="divcol" style="gap: 10px">
                 <div class="container-label">
                   <label for="photo-document" class="aend">Foto de Documento
                     <span>(ambos lados)</span>
                   </label>
                 </div>
-                <div class="fwrap" style="gap: 15px">
+                
+                <div class="fwrap" style="gap: 15px; --fb: 117px">
                   <v-file-input
                     id="photo-document"
                     v-model="formIdentity.documentFront"
@@ -104,12 +106,13 @@
                 </div>
               </div>
               
-              <div class="divcol" style="gap: 5px">
+              <div class="divcol" style="gap: 10px">
                 <div class="container-label">
                   <label for="face-identity" class="aend">Identificación Facial
-                    <span>(Foto nitida de la persona con documento en mano)</span>
+                    <span>(Foto nítida donde se vea tu cara y un papel con la fecha de hoy y la palabra “InfinityBlocks” escrito en él)</span>
                   </label>
                 </div>
+                
                 <div class="center">
                   <v-file-input
                     id="face-identity"
@@ -117,6 +120,7 @@
                     solo hide-details
                     prepend-icon=""
                     :rules="rules.required"
+                    class="face-identity"
                     @change="imagePreview('faceIdentityImg', formIdentity.faceIdentity)"
                   >
                     <template #selection>
@@ -130,6 +134,21 @@
                   </v-file-input>
                 </div>
               </div>
+
+              <div class="divcol" style="gap: 5px">
+                <label for="wallet_direction">Dirección de Billetera</label>
+                <v-text-field
+                  id="wallet_direction"
+                  v-model="formIdentity.wallet_direction"
+                  append-icon="mdi-chevron-down"
+                  solo hide-details
+                  :rules="rules.required"
+                ></v-text-field>
+              </div>
+
+              <v-btn class="btn align" style="--bg: var(--active)" @click="sendRequest()">
+                Enviar Información
+              </v-btn>
             </v-card>
             
             <h2 class="p" style="--fs: max(16px, 2em)">VERIFICACIÓN DE BILLETERA</h2>
@@ -147,10 +166,6 @@
                 Descargar Formulario
               </v-btn>
             </v-card>
-
-            <v-btn class="btn align" @click="sendRequest()">
-              Enviar solicitud
-            </v-btn>
           </div>
         </v-window-item>
       </v-window>
