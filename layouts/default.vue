@@ -1,6 +1,11 @@
 <template>
   <v-app
-    id="layout" class="relative"
+    id="layout"
+    v-touch="{
+      left: () => swipe('left'),
+      right: () => swipe('right'),
+    }"
+    class="relative"
     :style="`--bg: ${isExceptionRoute ? '' : `url(${require('~/assets/sources/images/bg-app.png')})`}`"
   >
     <Alerts ref="alerts" />
@@ -40,6 +45,24 @@ export default {
   //   window.removeEventListener("resize", this.footerHeightListener);
   // },
   methods: {
+    swipe(dir) {
+      const dataNavbar = this.$refs.navbar.dataNavbar
+      const currentTab = this.$refs.navbar.currentTab
+      
+      if (dir === "left" && dataNavbar[dataNavbar.length-1].to !== currentTab) {
+        // left
+        const currentEl = dataNavbar.find(data => data.to === currentTab)
+        const nextEl = dataNavbar[dataNavbar.indexOf(currentEl) + 1]
+        
+        this.$router.push(this.localePath(nextEl.to))
+      } else if (dir === "right" && dataNavbar[0].to !== currentTab) {
+        // right
+        const currentEl = dataNavbar.find(data => data.to === currentTab)
+        const prevEl = dataNavbar[dataNavbar.indexOf(currentEl) - 1]
+        
+        this.$router.push(this.localePath(prevEl.to))
+      }
+    },
     scrollX() {
       const
         scrollableDesktop = document.querySelectorAll('.scrollx'),

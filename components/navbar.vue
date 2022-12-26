@@ -4,9 +4,9 @@
     
     <v-app-bar id="navbar" color="transparent" fixed class="isolate">
       <v-tabs v-model="currentTab" hide-slider style="--bg-active: var(--active); --c-active: #fff; --g: 0">
-        <v-tab id="navbar-toggle" class="menu-toggle-activator">
+        <v-btn id="navbar-toggle" class="menu-toggle-activator">
           <v-icon size="2em" style="color: #fff !important">mdi-menu</v-icon>
-        </v-tab>
+        </v-btn>
         
         <v-tab v-for="(item, i) in dataNavbar" :key="i" class="tcap" :to="item.to">
           {{item.name}}

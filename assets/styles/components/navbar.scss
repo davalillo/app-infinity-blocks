@@ -37,6 +37,16 @@
         border-radius: 0 0 1.25em 1.25em !important;
         overflow: hidden;
       }
+      
+      .v-btn {
+        font-size: max(12px, 1.2em) !important;
+        background-color: var(--primary) !important;
+        min-width: var(--h-navbar) !important;
+        min-height: 100% !important;
+        border-radius: 0;
+        padding: 0 !important;
+      }
+      
       .v-tab {
         font-size: 1.3em !important;
         @include media(max, 500px) {font-size: 1em !important}
