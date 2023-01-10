@@ -217,6 +217,7 @@
             placeholder="Ingresar teléfono"
             hide-spin-buttons
             solo hide-details
+            :rules="rules.phone"
           >
             <template #prepend>
               <v-select
@@ -325,7 +326,7 @@
               placeholder="Ingresar teléfono"
               hide-spin-buttons
               solo hide-details
-              :rules="rules.required"
+              :rules="rules.phone"
             >
               <template #prepend>
                 <v-select

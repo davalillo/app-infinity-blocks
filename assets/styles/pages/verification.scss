@@ -86,6 +86,7 @@
         width: clamp(2.5em, 5vw, 5.3125em);
         aspect-ratio: 1 / .95;
         input {
+          caret-color: #000 !important;
           color: #000 !important;
           font-size: 19px !important;
           font-weight: 700 !important;

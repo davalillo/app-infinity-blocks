@@ -4,9 +4,21 @@ export default {
     return {
       rules: {
         required: [(v) => !!v || "Field required"],
+        username: [
+          (v) => !!v || "Field required",
+          (v) => v >= 6 || "Must be at least 6 characters, lowercase and alphanumeric",
+        ],
         email: [
           (v) => !!v || "Field required",
-          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+          (v) => /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'E-mail must be valid',
+        ],
+        password: [
+          (v) => !!v || "Field required",
+          (v) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/.test(v) || 'Must have uppercase, lowercase, numbers, and a minimum number of 8 characters',
+        ],
+        phone: [
+          (v) => !!v || "Field required",
+          (v) => /^[0-9]{5,15}$/.test(v) || 'Incorrect Format',
         ],
       }
     }

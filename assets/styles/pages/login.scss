@@ -25,6 +25,15 @@
     }
   }
 
+  .v-btn--disabled {
+    opacity: .5;
+    background-color: var(--bg, var(--primary)) !important;
+  }
+
+  .username-input input {
+    text-transform: lowercase;
+  }
+
   .v-window-item > section {
     display: flex;
     flex-direction: column;

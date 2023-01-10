@@ -16,9 +16,10 @@
               <v-text-field
                 id="username-login"
                 v-model="formLogin.username"
-                :rules="rules.required"
+                :rules="rules.username"
                 placeholder="Ingresa tu usuario"
                 hide-details solo
+                class="username-input"
               ></v-text-field>
             </div>
             
@@ -27,8 +28,8 @@
               <v-text-field
                 id="password-login"
                 v-model="formLogin.password"
-                :type="showLogin ? 'number' : 'password'"
-                :rules="rules.required"
+                :type="showLogin ? 'text' : 'password'"
+                :rules="rules.password"
                 placeholder="Ingresa tu contraseña"
                 hide-details solo
                 hide-spin-buttons
@@ -71,7 +72,7 @@
       <!-- register window -->
       <v-window-item id="register-window" :value="2">
         <section>
-          <button class="mb-10" @click="windowStep = 1">
+          <button class="mb-10" @click="$router.go()">
             <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
           </button>
 
@@ -107,7 +108,8 @@
                 id="username-register"
                 v-model="formRegister.username"
                 solo hide-details
-                :rules="rules.required"
+                :rules="rules.username"
+                class="username-input"
               ></v-text-field>
             </div>
             
@@ -132,10 +134,10 @@
                 <v-text-field
                   :id="formRegister.password ? '' : 'password-register'"
                   v-model="formRegister.password"
-                  :type="showRegister ? 'number' : 'password'"
+                  :type="showRegister ? 'text' : 'password'"
                   solo hide-details
                   hide-spin-buttons
-                  :rules="rules.required"
+                  :rules="rules.password"
                 >
                   <template #append>
                     <v-icon size="1.3em" @click="showRegister = !showRegister">
@@ -148,7 +150,7 @@
               <v-text-field
                 :id="formRegister.password ? 'password-register' : ''"
                 v-model="passwordConfirmerRegister"
-                :type="showRegister ? 'number' : 'password'"
+                :type="showRegister ? 'text' : 'password'"
                 solo hide-details
                 hide-spin-buttons
                 :rules="rules.confirmPasswordRegister"
@@ -172,7 +174,7 @@
                 type="number"
                 hide-spin-buttons
                 solo hide-details
-                :rules="rules.required"
+                :rules="rules.phone"
               >
                 <template #prepend>
                   <v-select
@@ -198,7 +200,8 @@
             </div>
             
             <v-btn
-              class="btn align mt-5" style="--bg: var(--primary)"
+              :disabled="!$refs.formRegister?.validate()"
+              class="btn align mt-5" style="--bg: var(--primary); --bg-disabled: var(--primary)"
               @click="register()">
               Registrar
             </v-btn>
@@ -210,7 +213,7 @@
       <!-- recover window -->
       <v-window-item id="login-window" :value="3">
         <section>
-          <button class="mb-10" @click="windowStep = 1">
+          <button class="mb-10" @click="$router.go()">
             <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
           </button>
 
@@ -239,8 +242,8 @@
               <v-text-field
                 id="password-recover"
                 v-model="formRecover.password"
-                :type="showRecover ? 'number' : 'password'"
-                :rules="rules.required"
+                :type="showRecover ? 'text' : 'password'"
+                :rules="rules.password"
                 placeholder="Ingresa nueva contraseña"
                 hide-details solo
                 hide-spin-buttons
@@ -258,7 +261,7 @@
               <v-text-field
                 id="confirm-password-login"
                 v-model="passwordConfirmerRecover"
-                :type="showRecover ? 'number' : 'password'"
+                :type="showRecover ? 'text' : 'password'"
                 :rules="rules.confirmPasswordRecover"
                 placeholder="Confirma contraseña"
                 hide-details solo
@@ -279,8 +282,11 @@
 </template>
 
 <script>
+import computeds from '~/mixins/computeds'
+
 export default {
   name: "LoginPage",
+  mixins: [computeds],
   layout: "empty-layout",
   asyncData({ from, store }) {
     let windowStep
@@ -329,18 +335,14 @@ export default {
       showRegister: false,
       showRecover: false,
       rules: {
-        required: [(v) => !!v || "Field required"],
-        email: [
-          (v) => !!v || "Field required",
-          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ],
         confirmPasswordRegister: [
           (v) => !!v || "Field required",
-          v => this.formRegister.password === this.passwordConfirmerRegister || 'Password must match',
+          (v) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/.test(v) || 'Must have uppercase, lowercase, numbers, and a minimum number of 8 characters',
+          () => this.formRegister.password === this.passwordConfirmerRegister || 'Password must match',
         ],
         confirmPasswordRecover: [
           (v) => !!v || "Field required",
-          v => this.formRecover.password === this.passwordConfirmerRecover || 'Password must match',
+          () => this.formRecover.password === this.passwordConfirmerRecover || 'Password must match',
         ],
       }
     }
@@ -357,17 +359,17 @@ export default {
   // },
   methods: {
     login() {
-      if (!this.$refs.formLogin.validate()) return alert("verifica que los campos sean correctos");
+      if (!this.$refs.formLogin.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
       localStorage.setItem("auth", true)
       this.$router.push(this.localePath('/profile'))
     },
     register() {
-      if (!this.$refs.formRegister.validate()) return alert("verifica que los campos sean correctos");
+      if (!this.$refs.formRegister.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
       localStorage.setItem("auth", true)
       this.$router.push(this.localePath('/profile'))
     },
     recover() {
-      if (!this.$refs.formRecover.validate()) return alert("verifica que los campos sean correctos");
+      if (!this.$refs.formRecover.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
       console.log("recovered")
       this.$alert("success", {title: "recovered"})
       this.$router.go()
