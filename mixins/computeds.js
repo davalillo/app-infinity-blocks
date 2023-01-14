@@ -25,14 +25,20 @@ export default {
   },
   // under testing
   computed: {
-    baseUrl() {
+    baseDomainUrl() {
       return this.$axios.defaults.baseURL
     },
-    isLogged() {
-      return this.$wallet.isSignedIn()
+    uid() {
+      return JSON.parse(localStorage.getItem("auth")).id
     },
-    user() {
-      return this.$store.state.dataUser
+    tokenAuth() {
+      return JSON.parse(localStorage.getItem("auth")).token
     },
+    // isLogged() {
+    //   return this.$wallet.isSignedIn()
+    // },
+    // user() {
+    //   return this.$store.state.dataUser
+    // },
   }
 }

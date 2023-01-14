@@ -16,10 +16,11 @@
               <v-text-field
                 id="username-login"
                 v-model="formLogin.username"
-                :rules="rules.username"
+                :rules="rules.required"
                 placeholder="Ingresa tu usuario"
                 hide-details solo
                 class="username-input"
+                @keyup="$event => $event.key === 'Enter' ? login() : ''"
               ></v-text-field>
             </div>
             
@@ -33,6 +34,7 @@
                 placeholder="Ingresa tu contraseña"
                 hide-details solo
                 hide-spin-buttons
+                @keyup="$event => $event.key === 'Enter' ? login() : ''"
               >
                 <template #append>
                   <v-icon size="1.3em" @click="showLogin = !showLogin">
@@ -43,7 +45,9 @@
             </div>
             
             <v-btn
+              :disabled="!$refs.formLogin?.validate() || loadingBtnLogin"
               class="btn align" style="--bg: var(--active)"
+              :loading="loadingBtnLogin"
               @click="login()">
               Iniciar sesión
             </v-btn>
@@ -52,11 +56,7 @@
           <aside class="divcol center tcenter" style="gap: inherit; --fs: max(15px, 1.25em)">
             <a
               style="--fw: 800"
-              @click="
-                $store.state.verificationEmail
-                ? windowStep = 3
-                : $router.push(localePath('/verification-email/:login:recover'))
-              ">
+              @click="windowStep = 3">
               ¿Olvidaste tu contraseña?
             </a>
 
@@ -84,6 +84,7 @@
                 v-model="formRegister.email"
                 solo hide-details
                 :rules="rules.email"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
               ></v-text-field>
             </div>
             
@@ -106,10 +107,11 @@
               </label>
               <v-text-field
                 id="username-register"
-                v-model="formRegister.username"
+                v-model="formRegister.userName"
                 solo hide-details
-                :rules="rules.username"
+                :rules="rules.required"
                 class="username-input"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
               ></v-text-field>
             </div>
             
@@ -138,6 +140,7 @@
                   solo hide-details
                   hide-spin-buttons
                   :rules="rules.password"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
                 >
                   <template #append>
                     <v-icon size="1.3em" @click="showRegister = !showRegister">
@@ -154,6 +157,7 @@
                 solo hide-details
                 hide-spin-buttons
                 :rules="rules.confirmPasswordRegister"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
               ></v-text-field>
             </div>
             
@@ -161,8 +165,10 @@
               <label for="partner-register">PATROCINADOR</label>
               <v-text-field
                 id="partner-register"
-                v-model="formRegister.partner"
+                v-model="formRegister.patrocinador"
                 solo hide-details
+                :disabled="blockPartner"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
               ></v-text-field>
             </div>
             
@@ -170,15 +176,16 @@
               <label for="phone-register">TELÉFONO <sup>*</sup></label>
               <v-text-field
                 id="phone-register"
-                v-model="formRegister.phone"
+                v-model="formRegister.telefono.numero"
                 type="number"
                 hide-spin-buttons
                 solo hide-details
                 :rules="rules.phone"
+                @keyup="$event => $event.key === 'Enter' ? register() : ''"
               >
                 <template #prepend>
                   <v-select
-                    v-model="formRegister.phonePrefix"
+                    v-model="formRegister.telefono.prefijoInternacional"
                     :items="countryPhoneList"
                     item-text="number"
                     solo hide-details
@@ -200,8 +207,9 @@
             </div>
             
             <v-btn
-              :disabled="!$refs.formRegister?.validate()"
+              :disabled="!$refs.formRegister?.validate() || loadingBtnRegister"
               class="btn align mt-5" style="--bg: var(--primary); --bg-disabled: var(--primary)"
+              :loading="loadingBtnRegister"
               @click="register()">
               Registrar
             </v-btn>
@@ -210,8 +218,59 @@
       </v-window-item>
 
 
-      <!-- recover window -->
+      <!-- send email window -->
       <v-window-item id="login-window" :value="3">
+        <section>
+          <button class="mb-10" @click="$router.go()">
+            <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
+          </button>
+
+          <v-form
+            ref="formSendEmail" class="card divcol"
+            style="--bg: var(--primary); --w: 100%; gap: 1em"
+            @submit.prevent="sendEmail()"
+          >
+            <div class="divcol" style="gap: .5em">
+              <label class="relative" for="recover-email">CORREO RECUPERACIÓN:
+                <!-- <v-tooltip top nudge-top="10px" color="#fff" content-class="custome-tooltip">
+                  <template #activator="{ on, attrs }">
+                    <img
+                      src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
+                      style="--w: max(16px, .9em); --l: auto; --top: auto; --b: -5px"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                  </template>
+                  
+                  <span>
+                    Debe incluir mayúsculas, minúsculas, números y mínimo 8 carácteres
+                  </span>
+                </v-tooltip> -->
+              </label>
+              <v-text-field
+                id="recover-email"
+                v-model="formSendEmail.email"
+                placeholder="Ingresa el correo de tu cuenta"
+                hide-details solo
+                :rules="rules.email"
+                @keyup="$event => $event.key === 'Enter' ? sendEmail() : ''"
+              ></v-text-field>
+            </div>
+            
+            <v-btn
+              :disabled="!$refs.formSendEmail?.validate() || loadingBtnSendEmail"
+              class="btn align" style="--bg: var(--active)"
+              :loading="loadingBtnSendEmail"
+              @click="sendEmail()">
+              Enviar correo
+            </v-btn>
+          </v-form>
+        </section>
+      </v-window-item>
+
+
+      <!-- recover window -->
+      <v-window-item id="login-window" :value="4">
         <section>
           <button class="mb-10" @click="$router.go()">
             <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
@@ -247,6 +306,7 @@
                 placeholder="Ingresa nueva contraseña"
                 hide-details solo
                 hide-spin-buttons
+                @keyup="$event => $event.key === 'Enter' ? recover() : ''"
               >
                 <template #append>
                   <v-icon size="1.3em" @click="showRecover = !showRecover">
@@ -266,11 +326,14 @@
                 placeholder="Confirma contraseña"
                 hide-details solo
                 hide-spin-buttons
+                @keyup="$event => $event.key === 'Enter' ? recover() : ''"
               ></v-text-field>
             </div>
             
             <v-btn
+              :disabled="!$refs.formRecover?.validate() || loadingBtnRecover"
               class="btn align" style="--bg: var(--active)"
+              :loading="loadingBtnRecover"
               @click="recover()">
               Recuperar
             </v-btn>
@@ -289,9 +352,8 @@ export default {
   mixins: [computeds],
   layout: "empty-layout",
   asyncData({ from, store }) {
-    let windowStep
-    if (from.params.verification?.includes(":recover") && store.state.verificationEmail) windowStep = 3
-    else if (from.params.verification?.includes(":register") && store.state.verificationEmail) windowStep = 2
+    let windowStep = 1
+    if (from.params.verification?.includes(":recover") && store.state.currentEmailVerification.token) windowStep = 4
 
     return {
       windowStep
@@ -301,22 +363,28 @@ export default {
     return {
       windowStep: 1,
       formLogin: {
-        username: undefined,
+        userName: undefined,
         password: undefined,
       },
       formRegister: {
         email: undefined,
-        username: undefined,
+        userName: undefined,
         password: undefined,
-        partner: undefined,
-        phonePrefix: "+593",
-        phone: undefined,
+        patrocinador: undefined,
+        telefono: {
+          prefijoInternacional: "+593",
+          numero: undefined,
+        },
       },
+      blockPartner: false,
       passwordConfirmerRegister: undefined,
       formRecover: {
         password: undefined,
       },
       passwordConfirmerRecover: undefined,
+      formSendEmail: {
+        email: undefined,
+      },
       countryPhoneList: [
         {
           icon: require("~/assets/sources/images/spain-flag.jpg"),
@@ -344,7 +412,11 @@ export default {
           (v) => !!v || "Field required",
           () => this.formRecover.password === this.passwordConfirmerRecover || 'Password must match',
         ],
-      }
+      },
+      loadingBtnLogin: false,
+      loadingBtnRegister: false,
+      loadingBtnRecover: false,
+      loadingBtnSendEmail: false,
     }
   },
   head() {
@@ -353,26 +425,124 @@ export default {
       title,
     }
   },
-  // mounted() {
-  //   this.$targetTooltip('.modalSettings img[alt="info"]')
-  //   window.addEventListener("resize", () => this.$targetTooltip('.modalSettings img[alt="info"]', 13))
-  // },
+  computed: {
+    currToken() {
+      return this.$store.state.currentEmailVerification.token
+    },
+  },
+  mounted() {
+    // this.$targetTooltip('.modalSettings img[alt="info"]')
+    // window.addEventListener("resize", () => this.$targetTooltip('.modalSettings img[alt="info"]', 13))
+
+    if (JSON.parse(localStorage.getItem('auth'))) return this.$router.push(this.localePath('/profile'))
+
+    this.getPartnerCode()
+  },
   methods: {
+    getPartnerCode() {// under construction <------------ 👇
+      if (!this.$route.params.login) return;
+
+      this.$axios.get(`${this.baseDomainUrl}/usuarios/patrocinador/${this.$route.params.login.split(":")[1]}`)
+      .then(result => {
+        console.info(result.data) // console
+        this.windowStep = 2
+        this.formRegister.patrocinador = result.data
+        this.blockPartner = true
+      }).catch(err => {
+        console.error(err)
+        this.$alert("cancel", {desc: err.message})
+      })
+    },
     login() {
-      if (!this.$refs.formLogin.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
-      localStorage.setItem("auth", true)
-      this.$router.push(this.localePath('/profile'))
+      if (!this.$refs.formLogin.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnLogin = true
+
+      // login endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/login`, this.formLogin).then(result => {
+        console.info("<<--login-->>", result.data) // console
+        this.loadingBtnLogin = false
+        if (result.data.emailVerificado) {
+          localStorage.setItem("auth", JSON.stringify({id: result.data.id, token: result.data.token}))
+          this.$alert("success", {title: "Logged"})
+          this.$router.push(this.localePath("/profile"))
+          return;
+        }
+        
+        // redirection to code validation
+        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        this.$router.push(this.localePath("/verification-email/:login"))
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnLogin = false
+        this.$alert("cancel", {
+          desc: err.message === "Request failed with status code 400"
+          ? "username or password not founded"
+          : err.message
+        })
+      })
     },
     register() {
-      if (!this.$refs.formRegister.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
-      localStorage.setItem("auth", true)
-      this.$router.push(this.localePath('/profile'))
+      if (!this.$refs.formRegister.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnRegister = true
+
+      // register endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/registro`, this.formRegister).then(result => {
+        console.info("<<--register-->>", result.data) // console
+        this.loadingBtnRegister = false
+        // storage current email
+        this.$store.commit("emailVerification", {email: this.formRegister.email})
+        
+        // redirection to code validation
+        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        this.$router.push(this.localePath("/verification-email/:login"))
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnRegister = false
+        this.$alert("cancel", {
+          desc: err.message === "Request failed with status code 400"
+          ? "username or email alreay exist"
+          : err.message
+        })
+      })
+    },
+    sendEmail() {
+      if (!this.$refs.formSendEmail.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnSendEmail = true
+
+      // recover endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarCambioPassword`, {...this.formSendEmail})
+      .then(result => {
+        console.info("<<--send email-->>", result.data) // console
+        this.loadingBtnSendEmail = false
+        // storage current email
+        this.$store.commit("emailVerification", {...this.formSendEmail})
+        
+        // redirection to code validation
+        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        this.$router.push(this.localePath("/verification-email/:recover"))
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnSendEmail = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
     recover() {
-      if (!this.$refs.formRecover.validate()) return this.$alert("cancel", "verifica que los campos sean correctos");
-      console.log("recovered")
-      this.$alert("success", {title: "recovered"})
-      this.$router.go()
+      if (!this.$refs.formRecover.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnRecover = true
+
+      // recover endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/cambiarPassword`, {"token": this.currToken, ...this.formRecover})
+      .then(result => {
+        console.info("<<--recover-->>", result.data) // console
+        this.loadingBtnRecover = false
+        
+        this.$alert("success", {desc: "contraseña recuperada exitosamente"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnRecover = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
   }
 }

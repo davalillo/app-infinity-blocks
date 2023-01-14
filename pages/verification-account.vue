@@ -1,7 +1,7 @@
 <template>
-  <v-app id="verification">
+  <v-app id="verification" class="account">
     <v-main id="verification-content">
-      <!-- <div class="center" style="position: absolute; top: 0; left: 0">
+      <div class="center" style="position: absolute; top: 0; left: 0">
         <v-btn
           id="go-back"
           class="btn"
@@ -11,21 +11,22 @@
         </v-btn>
         
         <label for="go-back" class="hspan" style="--fw: 500">Go back</label>
-      </div> -->
+      </div>
 
       <div class="window-content divcol" style="gap: 2em; --width: min(100%, 37em)">
         <h2 class="p">VERIFICACIÓN DE IDENTIDAD</h2>
         
-        <v-card class="card divcol" style="gap: 15px">
+        <v-form ref="formIdentity" class="card divcol" style="gap: 15px" @submit.prevent="sendRequest()">
           <div class="divcol" style="gap: 5px">
             <label for="type">Tipo de Documento</label>
             <v-select
               id="type"
-              v-model="formIdentity.type"
+              v-model="formIdentity.tipoDocumento"
               :items="documentTypes"
               append-icon="mdi-chevron-down"
               solo hide-details
               :rules="rules.required"
+              :menu-props="{contentClass: 'desplegableMenuVerificationAccount'}"
             ></v-select>
           </div>
 
@@ -39,11 +40,11 @@
             <div class="fwrap" style="gap: 15px; --fb: 117px">
               <v-file-input
                 id="photo-document"
-                v-model="formIdentity.documentFront"
+                v-model="formIdentity.fotoFrente"
                 solo hide-details
                 prepend-icon=""
                 :rules="rules.required"
-                @change="imagePreview('documentFrontImg', formIdentity.documentFront)"
+                @change="imagePreview('documentFrontImg', formIdentity.fotoFrente)"
               >
                 <template #selection>
                   <img :src="documentFrontImg" alt="image preview" style="--w: 100%; --h: 100%; --of: cover">
@@ -56,12 +57,13 @@
               </v-file-input>
               
               <v-file-input
+                v-if="formIdentity.tipoDocumento !== 'Pasaporte'"
                 id="photo-document"
-                v-model="formIdentity.documentBack"
+                v-model="formIdentity.fotoReverso"
                 solo hide-details
                 prepend-icon=""
                 :rules="rules.required"
-                @change="imagePreview('documentBackImg', formIdentity.documentBack)"
+                @change="imagePreview('documentBackImg', formIdentity.fotoReverso)"
               >
                 <template #selection>
                   <img :src="documentBackImg" alt="image preview" style="--w: 100%; --h: 100%; --of: cover">
@@ -85,12 +87,11 @@
             <div class="center">
               <v-file-input
                 id="face-identity"
-                v-model="formIdentity.faceIdentity"
+                v-model="formIdentity.fotoFacial"
                 solo hide-details
                 prepend-icon=""
                 :rules="rules.required"
-                class="face-identity"
-                @change="imagePreview('faceIdentityImg', formIdentity.faceIdentity)"
+                @change="imagePreview('faceIdentityImg', formIdentity.fotoFacial)"
               >
                 <template #selection>
                   <img :src="faceIdentityImg" alt="image preview" style="--w: 100%; --h: 100%; --of: cover">
@@ -105,20 +106,23 @@
           </div>
 
           <div class="divcol" style="gap: 5px">
-            <label for="wallet_direction">Dirección de Billetera</label>
+            <label for="wallet_address">Dirección de Billetera</label>
             <v-text-field
-              id="wallet_direction"
-              v-model="formIdentity.wallet_direction"
+              id="wallet_address"
+              v-model="formIdentity.walletAddress"
               append-icon="mdi-chevron-down"
               solo hide-details
               :rules="rules.required"
+              @keyup="$event => $event.key === 'enter' ? sendRequest() : ''"
             ></v-text-field>
           </div>
 
-          <v-btn class="btn align" style="--bg: var(--active)" @click="sendRequest()">
-            Enviar Información
-          </v-btn>
-        </v-card>
+          <v-btn
+            :disabled="!$refs.formIdentity?.validate() || loadingBtnIdentity"
+            class="btn align" style="--bg: var(--active)"
+            :loading="loadingBtnIdentity" @click="sendRequest()"
+          >Enviar Información</v-btn>
+        </v-form>
         
         <h2 class="p" style="--fs: max(16px, 2em)">VERIFICACIÓN DE BILLETERA</h2>
         
@@ -130,10 +134,9 @@
           </ul>
 
           <v-btn
+            :disabled="!downloadBtn || loadingBtnDownload"
             class="btn" style="--fs: max(15px, 1.2em); --bg: var(--active); --p: .3em .5em"
-            @click="downloadForm()">
-            Descargar Formulario
-          </v-btn>
+            :loading="loadingBtnDownload" @click="downloadForm()">Descargar Formulario</v-btn>
         </v-card>
       </div>
     </v-main>
@@ -149,16 +152,20 @@ export default {
   layout: "empty-layout",
   data() {
     return {
-      documentTypes: ["lorem ipsum", "lorem", "ipsum"],
+      documentTypes: ["Pasaporte", "Documento de Identificación Nacional", "Licencia de conducir"],
       formIdentity: {
-        type: undefined,
-        documentFront: undefined,
-        documentBack: undefined,
-        faceIdentity: undefined,
+        tipoDocumento: undefined,
+        fotoFrente: undefined,
+        fotoReverso: undefined,
+        fotoFacial: undefined,
+        walletAddress: undefined,
       },
       documentFrontImg: undefined,
       documentBackImg: undefined,
       faceIdentityImg: undefined,
+      loadingBtnIdentity: undefined,
+      loadingBtnDownload: undefined,
+      downloadBtn: false,
     }
   },
   head() {
@@ -167,6 +174,9 @@ export default {
       title,
     }
   },
+  mounted() {
+    this.getDataIdentity()
+  },
   methods: {
     imagePreview(image, url) {
       if (url) this[image] = URL.createObjectURL(url)
@@ -174,9 +184,35 @@ export default {
     downloadForm() {
       console.log("download")
     },
+    getDataIdentity() {
+      // get verification endpoint
+      this.$axios.get(`${this.baseDomainUrl}/verification/${this.uid}`).then(result => {
+        console.info("<<--get data-->>", result.data) // console
+        
+        // set data form
+        this.formIdentity = result.data
+        // enable download button if approved
+        this.downloadBtn = result.data.aprobado
+      }).catch(err => console.error(err))
+    },
     sendRequest() {
-      console.log("request")
-      this.$router.push(this.localePath("/"))
+      if (!this.$refs.formIdentity.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnIdentity = true
+
+      console.log({userId: this.uid, ...this.formIdentity}) // error <---------------- 👈
+      // post verification endpoint
+      this.$axios.post(`${this.baseDomainUrl}/verification`, this.$formData({userId: this.uid, ...this.formIdentity}))
+      .then(result => {
+        console.info("<<--identity form-->>", result.data) // console
+        this.loadingBtnIdentity = false
+        
+        this.$alert("success", {desc: "validacion exitosa"})
+        this.$router.push(this.localePath("/profile"))
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnIdentity = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
   }
 };

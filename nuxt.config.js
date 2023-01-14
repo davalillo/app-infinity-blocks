@@ -89,7 +89,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: development ? 'http://localhost:3001/api' : 'https://domain/api',
+    baseURL: development ? 'https://dry-sound-2739.fly.dev' : 'https://dry-sound-2739.fly.dev',
   },
 
   // nuxt i18n documentation: https://i18n.nuxtjs.org
@@ -152,7 +152,7 @@ export default {
   },
 
   server: {
-    host: 'localhost', // default: localhost,
+    host: '192.168.100.73', // default: localhost,
     port: '8000', // default: 3000
   },
 

@@ -1,5 +1,7 @@
 <template>
   <v-main id="settings">
+    <ModalsFreezeAccount ref="modal"></ModalsFreezeAccount>
+
     <div id="settings-content" class="divcol center relative" style="gap: .8em">
       <div id="settings-content--button-back" class="center">
         <v-btn
@@ -20,7 +22,7 @@
         
         <v-file-input
           id="avatar-preview"
-          v-model="avatarModel"
+          v-model="user.urlFotoPerfil"
           style="display: none"
           @change="avatarPreview()"
         ></v-file-input>
@@ -31,50 +33,48 @@
           >
           <template #badge>
             <v-btn icon>
-              <label for="avatar-preview">
+              <label for="avatar-preview" class="pointer">
                 <img src="~/assets/sources/icons/edit.svg" alt="edit avatar" style="--w: clamp(2em, 5vw, 2.7em)">
               </label>
             </v-btn>
           </template>
         </v-badge>
         
-        <h3 class="p mb-1" style="--fw: 400">pedroperez01</h3>
-        <span class="hspan" style="opacity: .6; --fs: max(15px, 1.2em)">pedroperez@gmail.com</span>
+        <h3 class="p mb-1" style="--fw: 400">{{user?.username}}</h3>
+        <span class="hspan" style="opacity: .6; --fs: max(15px, 1.2em)">{{user?.email}}</span>
       </v-card>
 
 
       <h3 class="p">INFORMACIÓN PERSONAL</h3>
       
-      <v-card class="card divcol" style="gap: 5px">
+      <v-form ref="formProfile" class="card divcol" style="gap: 5px" @submit.prevent="saveFormProfile()">
         <div class="divcol" style="gap: inherit">
           <label for="names-profile">Nombres</label>
           <v-text-field
-            v-if="!existDataUser"
             id="names-profile"
-            v-model="formProfile.names"
+            v-model="formProfile.nombre"
             placeholder="Nombres"
             solo hide-details
           ></v-text-field>
           
-          <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Pedro Jose</span>
+          <!-- <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Pedro Jose</span> -->
         </div>
         
         <div class="divcol" style="gap: inherit">
           <label for="surnames-profile">Apellidos</label>
           <v-text-field
-            v-if="!existDataUser"
             id="surnames-profile"
-            v-model="formProfile.surnames"
+            v-model="formProfile.apellidos"
             placeholder="Apellidos"
             solo hide-details
           ></v-text-field>
           
-          <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Perez Gonzalez</span>
+          <!-- <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Perez Gonzalez</span> -->
         </div>
         
         <div class="divcol" style="gap: inherit">
           <label for="birthday-profile">Fecha De Nacimiento</label>
-          <div v-if="!existDataUser" id="container-birthday" class="fnowrap" style="gap: 10px">
+          <div id="container-birthday" class="fnowrap" style="gap: 10px">
             <v-menu v-model="menuDay" bottom>
               <template #activator="{ on, attrs }">
                 <v-text-field
@@ -156,17 +156,16 @@
             </v-menu>
           </div>
           
-          <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">04/12/1992</span>
+          <!-- <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">04/12/1992</span> -->
         </div>
         
         <div class="divcol" style="gap: inherit">
           <label for="nationality-profile">Nacionalidad</label>
           <v-select
-            v-if="!existDataUser"
             id="nationality-profile"
-            v-model="formProfile.nationality"
+            v-model="formProfile.nacionalidadId"
             :items="countryList"
-            item-text="name"
+            item-text="id"
             placeholder="Selecciona el país"
             append-icon="mdi-chevron-down"
             solo hide-details
@@ -182,16 +181,16 @@
             </template>
           </v-select>
           
-          <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Ecuatoriana</span>
+          <!-- <span v-else class="hspan mb-2" style="--fs: max(16px, 1.3em); opacity: .6">Ecuatoriana</span> -->
         </div>
         
         <div class="divcol" style="gap: inherit">
           <label for="residence-profile">País De Residencia</label>
           <v-select
             id="residence-profile"
-            v-model="formProfile.residence"
+            v-model="formProfile.paisResidenciaId"
             :items="countryList"
-            item-text="name"
+            item-text="id"
             placeholder="Selecciona el país"
             append-icon="mdi-chevron-down"
             solo hide-details
@@ -212,7 +211,7 @@
           <label for="phone-profile">Número de Teléfono</label>
           <v-text-field
             id="phone-profile"
-            v-model="formProfile.phone"
+            v-model="formProfile.telefono.numero"
             type="number"
             placeholder="Ingresar teléfono"
             hide-spin-buttons
@@ -221,7 +220,7 @@
           >
             <template #prepend>
               <v-select
-                v-model="formProfile.phonePrefix"
+                v-model="formProfile.telefono.prefijoInternacional"
                 :items="countryList"
                 item-text="number"
                 solo hide-details
@@ -242,21 +241,23 @@
           </v-text-field>
         </div>
         
-        <v-btn class="btn align mt-5">
-          Guardar
-        </v-btn>
-      </v-card>
+        <v-btn
+          :disabled="loadingBtnProfile"
+          class="btn align mt-5" :loading="loadingBtnProfile"
+          @click="saveFormProfile()"
+        >Guardar</v-btn>
+      </v-form>
 
 
       <h3 id="verification-section" class="p">VERIFICACIÓN DE CUENTA</h3>
       
       <v-card class="card divcol center tcenter" style="gap: 8px">
-        <img :src="require(`~/assets/sources/icons/${verified ? 'success' : 'cancel'}.svg`)" alt="verify stat icon" style="--w: 6em">
+        <img :src="require(`~/assets/sources/icons/${cuentaVerificada ? 'success' : 'cancel'}.svg`)" alt="verify stat icon" style="--w: 6em">
         
-        <h3 class="p" style="--fs: max(16px, 1.4em)">CUENTA {{verified ? '' : 'NO'}} VERIFICADA</h3>
+        <h3 class="p" style="--fs: max(16px, 1.4em)">CUENTA {{cuentaVerificada ? '' : 'NO'}} VERIFICADA</h3>
         
         <v-btn
-          v-if="!verified" class="btn" style="--p: .3em .5em"
+          v-if="!cuentaVerificada" class="btn" style="--p: .3em .5em"
           @click="$router.push(localePath('/verification-account'))"
         >Solicitar Verificación</v-btn>
         <span v-else style="opacity: .7; word-break: break-all">0x5d2D75ED51D4A3B275f00F86632543f4010E9232</span>
@@ -276,18 +277,18 @@
             class="card divcol" style="--bg: var(--primary); --p: .8em 1em .8em 1.6em"
           >
             <div class="space" style="gap: inherit">
-              <h3 class="p tcap" style="text-align: start">{{item.fullname}}</h3>
+              <h3 class="p tcap" style="text-align: start">{{item.nombreCompleto}}</h3>
               
-              <v-btn icon small @click="editBeneficiary()">
+              <v-btn icon small @click="setFormEdit(item)">
                 <img src="~/assets/sources/icons/edit-outline.svg" alt="edit icon" style="--w: 1.5em">
               </v-btn>
             </div>
             <div class="space" style="gap: inherit">
               <span class="hspan tcap" style="--fs: max(16px, 1.3em); opacity: .7">
-                {{item.relationship}} - {{item.profitPercentage}}
+                {{item.parentesco}} - {{item.porcentaje}}%
               </span>
               
-              <v-btn icon small class="relative" style="bottom: -5px" @click="deleteBeneficiary()">
+              <v-btn icon small class="relative" style="bottom: -5px" @click="deleteBeneficiary(item)">
                 <img src="~/assets/sources/icons/delete-outline.svg" alt="edit icon" style="--w: 1.3em">
               </v-btn>
             </div>
@@ -295,22 +296,20 @@
         </div>
 
         <v-btn
-          v-if="!addBeneficiariesState"
+          v-if="!addBeneficiariesState && dataBeneficiaries.length <= 2"
           class="btn" style="--bg: var(--primary)"
           @click="addBeneficiariesState = true"
-        >
-          Agregar
-        </v-btn>
+        >Agregar</v-btn>
 
         <v-form
-          v-else ref="formBeneficiaries" class="fill_w anchorlineb divcol"
+          v-if="addBeneficiariesState" ref="formBeneficiaries" class="fill_w anchorlineb divcol"
           style="--b: auto; --w-line: 55%; --h-line: 2.5px; --bg-line: #ffF; padding-top: var(--gap); gap: inherit"
           @submit.prevent="saveBeneficiary()">
           <div class="divcol" style="gap: calc(var(--gap) / 3)">
             <label for="fullname-beneficiary">Nombre Completo</label>
             <v-text-field
               id="fullname-beneficiary"
-              v-model="formBeneficiaries.fullname"
+              v-model="formBeneficiaries.nombreCompleto"
               placeholder="Ingresar el nombre"
               solo hide-details
               :rules="rules.required"
@@ -321,7 +320,7 @@
             <label for="phone-beneficiary">Número de Teléfono</label>
             <v-text-field
               id="phone-beneficiary"
-              v-model="formBeneficiaries.phone"
+              v-model="formBeneficiaries.telefono.numero"
               type="number"
               placeholder="Ingresar teléfono"
               hide-spin-buttons
@@ -330,7 +329,7 @@
             >
               <template #prepend>
                 <v-select
-                  v-model="formBeneficiaries.phonePrefix"
+                  v-model="formBeneficiaries.telefono.prefijoInternacional"
                   :items="countryList"
                   item-text="number"
                   solo hide-details
@@ -366,7 +365,7 @@
             <label for="relationship-beneficiary">Parentesco</label>
             <v-select
               id="relationship-beneficiary"
-              v-model="formBeneficiaries.relationship"
+              v-model="formBeneficiaries.parentesco"
               :items="dataRelationship"
               placeholder="Ingresar Parentesco"
               solo hide-details
@@ -378,24 +377,30 @@
             <label for="relationship-beneficiary">Porcentaje a Beneficio</label>
             <v-select
               id="relationship-beneficiary"
-              v-model="formBeneficiaries.profitPercentage"
+              v-model="formBeneficiaries.porcentaje"
               placeholder="Seleccionar %"
               append-icon="mdi-chevron-down"
               :items="profitPercentages"
               solo hide-details
               :rules="rules.required"
               style="--w: min(100%, 9em); --h: 30px"
-            ></v-select>
+            >
+              <template #item="{ item }">
+                <span style="color: #fff !important">{{`${item}%`}}</span>
+              </template>
+            </v-select>
           </div>
           
           <div class="center align" style="gap: 10px">
-            <v-btn class="btn" @click="saveBeneficiary()">
-              Guardar
-            </v-btn>
+            <v-btn
+              :disabled="!$refs.formBeneficiaries?.validate() || loadingBtnBeneficiary" class="btn"
+              :loading="loadingBtnBeneficiary" @click="saveBeneficiary()"
+            >Guardar</v-btn>
             
-            <v-btn class="btn" style="--bg: var(--secondary)" @click="cancelBeneficiary()">
-              Cancelar
-            </v-btn>
+            <v-btn
+              class="btn" style="--bg: var(--secondary)"
+              @click="cancelBeneficiary()"
+            >Cancelar</v-btn>
           </div>
         </v-form>
       </v-card>
@@ -406,13 +411,16 @@
       </div>
       
       <v-card class="card divcol center" style="gap: 12px">
-        <v-btn class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800">
-          Cambiar Contraseña
-        </v-btn>
+        <v-btn
+          class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800"
+          @click="changePassword()"
+        >Cambiar Contraseña</v-btn>
         
-        <v-btn class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800">
-          Congelar mi cuenta
-        </v-btn>
+        <v-btn
+          :disabled="loadingBtnFreezeAccount"
+          class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800"
+          :loading="loadingBtnFreezeAccount" @click="$refs.modal.modalFreezeAccount = true"
+        >Congelar mi cuenta</v-btn>
       </v-card>
     </div>
   </v-main>
@@ -427,69 +435,74 @@ export default {
   layout: "empty-layout",
   data() {
     return {
-      existDataUser: false,
-      verified: false,
-      // for test <---------------
+      user: {
+        urlFotoPerfil: undefined,
+        email: undefined,
+        username: undefined,
+      },
+      cuentaVerificada: undefined,
+      walletAsociada: undefined,
+      // existDataUser: false, // just for testing <---------------
       
-      avatarModel: undefined,
       avatarImg: undefined,
       birthday_day: undefined,
       birthday_month: undefined,
       birthday_year: undefined,
+      
       formProfile: {
-        names: undefined,
-        surnames: undefined,
-        birthday: undefined,
-        nationality: undefined,
-        residence: undefined,
-        phonePrefix: "+593",
-        phone: undefined,
+        nombre: undefined,
+        apellidos: undefined,
+        fechaNacimiento: {},
+        nacionalidadId: undefined,
+        paisResidenciaId: undefined,
+        telefono: {
+          prefijoInternacional: "+593",
+          numero: undefined,
+        },
       },
       countryList: [
         {
+          id: 1,
           icon: require("~/assets/sources/images/spain-flag.jpg"),
           number: "+593",
           name: "ecuador",
         },
         {
+          id: 2,
           icon: require("~/assets/sources/images/usa-flag.jpg"),
           number: "+2134",
           name: "estados unidos",
         },
         {
+          id: 3,
           icon: require("~/assets/sources/images/spain-flag.jpg"),
           number: "+58",
           name: "venezuela",
         },
       ],
       addBeneficiariesState: false,
+      currentBeneficiaryEdit: {},
       formBeneficiaries: {
         fullname: undefined,
-        phonePrefix: "+593",
-        phone: undefined,
+        telefono: {
+          prefijoInternacional: "+593",
+          numero: undefined,
+        },
         email: undefined,
         relationship: undefined,
         profitPercentage: undefined,
       },
-      profitPercentages: ["10%", "20%", "30%"],
-      dataBeneficiaries: [
-        {
-          fullname: "juan perez sosa",
-          relationship: "padre",
-          profitPercentage: "40%",
-        },
-        {
-          fullname: "maría rico andrade",
-          relationship: "madre",
-          profitPercentage: "40%",
-        },
-      ],
+      profitPercentages: [10, 20, 30],
+      dataBeneficiaries: [],
       dataRelationship: [
         "padre/madre", "hermano/a", "hijo/a", "sobrino/a", "abuelo/a", "otro"
       ],
       menuDay: false,
       menuMonth: false,
       menuYear: false,
+      loadingBtnProfile: false,
+      loadingBtnBeneficiary: false,
+      loadingBtnFreezeAccount: false,
     }
   },
   head() {
@@ -500,17 +513,17 @@ export default {
   },
   computed: {
     onlyDay() {
-      return this.birthday_day?.split("-")[2] || undefined
+      return Number(this.birthday_day?.split("-")[2]) || undefined
     },
     onlyMonth() {
-      return this.birthday_month?.split("-")[1] || undefined
+      return Number(this.birthday_month?.split("-")[1]) || undefined
     },
     onlyYear() {
-      return this.birthday_year?.split("-")[0] || undefined
+      return Number(this.birthday_year?.split("-")[0]) || undefined
     },
-    fullBirthday() {
-      return `${this.onlyDay}-${this.onlyMonth}-${this.onlyYear}`
-    },
+    // fullBirthday() {
+    //   return `${this.onlyDay}-${this.onlyMonth}-${this.onlyYear}`
+    // },
   },
   watch: {
     menuYear(val) {
@@ -520,30 +533,125 @@ export default {
     },
   },
   mounted() {
+    this.getDataUser()
   },
   methods: {
-    avatarPreview() {
-      if (this.avatarModel) this.avatarImg = URL.createObjectURL(this.avatarModel)
+    getDataUser() {
+      this.$axios.get(`${this.baseDomainUrl}/configuracion/${this.uid}`)
+      .then(result => {
+        console.info(result.data) // console
+
+        // set user data
+        this.user = result.data.perfil
+        this.$equalData(this.formProfile, result.data.informacionPersonal)
+        this.cuentaVerificada = result.data.cuentaVerificada
+        this.walletAsociada = result.data.walletAsociada
+        
+        // set beneficiaries
+        this.dataBeneficiaries = result.data.beneficiarios
+      }).catch(err => {
+        console.error(err)
+        this.$alert("cancel", {desc: err.message})
+      })
     },
-    birthdaySelection(day, month, year) {
-      return 2
+    async saveFormProfile() {
+      if (!this.$refs.formProfile.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+
+      try {
+        if (this.birthday_day || this.birthday_month || this.birthday_year) {
+          this.formProfile.fechaNacimiento = {
+            year: this.onlyYear,
+            month: this.onlyMonth,
+            day: this.onlyDay,
+            dayOfWeek: this.onlyDay,
+          }
+        }
+        console.log("information data", this.formProfile) // error <---------------- 👈
+
+        // information endpoint
+        await this.$axios.put(`${this.baseDomainUrl}/configuracion/informacion`, this.formProfile)
+        .then(result => console.info("<<--information endpoint-->>", result)) // console
+        
+        console.log("photo utl", this.user.urlFotoPerfil) // error <---------------- 👈
+        // photo endpoint
+        if (this.user.urlFotoPerfil) await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, this.user.urlFotoPerfil)
+        .then(result => console.info("<<--photo endpoint-->>", result)) // console
+        
+        this.$alert("success", {desc: "datos guardados correctamente"})
+        // this.$router.go()
+      } catch(err) {
+        console.error(err)
+        this.$alert("cancel", {desc: err.message})
+      }
     },
     saveBeneficiary() {
-      if (!this.$refs.formBeneficiaries.validate()) return alert("need fill all fields");
-      this.addBeneficiariesState = false
+      if (!this.$refs.formBeneficiaries.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      if (this.currentBeneficiaryEdit?.id) {return this.editBeneficiary()};
+
+      // beneficiary endpoint
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/beneficiario`, this.formBeneficiaries)
+      .then(result => {
+        console.info("<<--beneficiary-->>", result.data) // console
+        
+        this.$alert("success", {desc: "beneficiario guardado exitosamente"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err)
+        this.addBeneficiariesState = false
+        this.$alert("cancel", {desc: err.message})
+      })
+    },
+    setFormEdit(item) {
+      const newItem = {...item}
+      newItem.telefono = {...item.telefono}
+
+      this.addBeneficiariesState = true
+      this.currentBeneficiaryEdit = newItem
+      this.formBeneficiaries = newItem
     },
     editBeneficiary() {
-      console.log("edit")
+      console.log(this.currentBeneficiaryEdit) // error <---------------- 👈
+      // edit beneficiary endpoint
+      this.$axios.put(`${this.baseDomainUrl}/configuracion/beneficiario/${this.currentBeneficiaryEdit.id}`)
+      .then(result => {
+        console.info("<<--edit beneficiary-->>", result.data) // console
+        
+        this.$alert("success", {desc: "beneficiario editado correctamente"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err)
+        this.addBeneficiariesState = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
-    deleteBeneficiary() {
-      console.log("delete")
+    deleteBeneficiary(item) {
+      // delete beneficiary endpoint
+      this.$axios.delete(`${this.baseDomainUrl}/configuracion/beneficiario/${item.id}`)
+      .then(result => {
+        console.info("<<--delete beneficiary-->>", result.data) // console
+        
+        this.$alert("success", {desc: "beneficiario eliimnado correctamente"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err)
+        this.addBeneficiariesState = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
     cancelBeneficiary() {
       this.addBeneficiariesState = false
+      this.currentBeneficiaryEdit = {}
       Object.keys(this.formBeneficiaries).forEach(e => {
-        this.formBeneficiaries[e] = undefined
+        if (e !== "telefono") this.formBeneficiaries[e] = undefined
       })
-      this.formBeneficiaries.phonePrefix = "+593"
+      this.formBeneficiaries.telefono.prefijoInternacional = "+593"
+      this.formBeneficiaries.telefono.numero = undefined
+    },
+    changePassword() {
+      this.$router.push(this.localePath("/settings-password"))
+    },
+    avatarPreview() {
+      if (this.user.urlFotoPerfil) this.avatarImg = URL.createObjectURL(this.user.urlFotoPerfil)
     },
     updateYear() {
       this.$refs.yearPicker.internalActivePicker = 'YEAR'

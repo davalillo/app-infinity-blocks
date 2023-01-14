@@ -44,6 +44,7 @@
     }
     .v-btn.btn {
       --bg: var(--primary);
+      &#go-back {--bg: var(--active)}
       --fs: max(15px, 1.4em);
       --w: max-content;
     }
@@ -101,6 +102,12 @@
         @include media(max, 380px) {aspect-ratio: 2.6 / 1 !important}
         padding-inline: 0 !important;
       }
+      &:only-child {
+        .v-input__slot {
+          aspect-ratio: 2.6 / 1 !important;
+          padding-inline: 0 !important;
+        }
+      }
       .v-text-field__slot {
         width: 100% !important;
         height: 100% !important;
@@ -127,15 +134,20 @@
         }
       }
     }
-    .v-file-input.face-identity {
-      .v-input__slot {
-        aspect-ratio: 2.6 / 1 !important;
-        padding-inline: 0 !important;
-      }
-    }
 
     .v-card {
       --bg: var(--accent);
     }
   }
+
+
+  &.account {
+    .v-form {
+      --bg: var(--accent);
+    }
+  }
+}
+
+.desplegableMenuVerificationAccount .v-list {
+  background-color: var(--active) !important;
 }

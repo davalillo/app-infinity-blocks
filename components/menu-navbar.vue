@@ -156,7 +156,7 @@ export default {
   },
   methods: {
     logOut() {
-      localStorage.clear()
+      localStorage.removeItem("auth")
       this.$router.go()
     },
   },
