@@ -1,7 +1,7 @@
 <template>
   <v-app id="verification" class="account">
     <v-main id="verification-content">
-      <div class="center" style="position: absolute; top: 0; left: 0">
+      <div id="verification-content--button-back" class="center">
         <v-btn
           id="go-back"
           class="btn"

@@ -17,14 +17,6 @@
 
 ///////////////////// global ///////////////////////
 
-// disabled buttons
-@layer layout {
-  .v-btn--disabled:not(.not_disabled) {
-    opacity: .5;
-    background-color: var(--bg, var(--primary)) !important;
-  }
-}
-
 // pickers
 @layer layout {
 .v-picker--date {

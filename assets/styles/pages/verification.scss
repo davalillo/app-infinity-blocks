@@ -21,6 +21,16 @@
     @include parent;
     padding-inline: var(--margin-global);
 
+    &--button-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      @include media(max, 600px) {
+        top: -55px;
+        left: 10px;
+      }
+    }
+
     .window-content {
       --width: min(100%, 37em);
       width: var(--width);
