@@ -1,7 +1,5 @@
 <template>
   <v-main id="settings">
-    <ModalsFreezeAccount ref="modal"></ModalsFreezeAccount>
-
     <div id="settings-content" class="divcol center relative" style="gap: .8em">
       <div id="settings-content--button-back" class="center">
         <v-btn
@@ -419,7 +417,11 @@
         <v-btn
           :disabled="loadingBtnFreezeAccount"
           class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800"
-          :loading="loadingBtnFreezeAccount" @click="$refs.modal.modalFreezeAccount = true"
+          :loading="loadingBtnFreezeAccount" @click="$confirmMsg({
+            title: 'Congelar Cuenta',
+            desc: '¿ Está seguro que desea congelar su cuenta ?',
+            fSuccess: () => freezeAccount()
+          })"
         >Congelar mi cuenta</v-btn>
       </v-card>
     </div>
@@ -655,6 +657,23 @@ export default {
     },
     updateYear() {
       this.$refs.yearPicker.internalActivePicker = 'YEAR'
+    },
+    freezeAccount() {
+      this.loadingBtnFreezeAccount = true
+
+      // freeze account endpoint
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/bloquearCuenta`, {"userId": this.uid}) // error <---------------- 👈
+      .then(result => {
+        console.info("<<--freeze account-->>", result.data) // console
+        this.loadingBtnFreezeAccount = false
+        
+        this.$alert("success", {desc: "su cuenta ha sido congelada"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err)
+        this.loadingBtnFreezeAccount = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
   }
 };

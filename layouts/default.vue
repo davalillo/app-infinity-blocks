@@ -9,6 +9,7 @@
     :style="`--bg: ${isExceptionRoute ? '' : `url(${require('~/assets/sources/images/bg-app.png')})`}`"
   >
     <Alerts ref="alerts" />
+    <ModalsConfirmMsg ref="confirmMsg" />
     <Navbar ref="navbar" />
     
     <v-main class="parent" :style="isExceptionRoute ? 'padding-block: 0 !important' : ''">
@@ -36,6 +37,7 @@ export default {
     // this.$store.dispatch("getData");
   },
   mounted() {
+    this.closeSesion()
     // this.footerHeightListener();
     
     // resize listener
@@ -45,6 +47,28 @@ export default {
   //   window.removeEventListener("resize", this.footerHeightListener);
   // },
   methods: {
+    closeSesion() {
+      let timeout;
+      setTimeout(() => this.$confirmMsg({
+        fOpen: () => {
+          timeout = setTimeout(() => {
+            localStorage.removeItem("auth")
+            this.$router.go()
+          }, 5000);
+        },
+        fSuccess: () => {
+          clearTimeout(timeout)
+          setTimeout(() => this.closeSesion(), 1800000)
+        },
+        fCancel: () => {
+          clearTimeout(timeout)
+          localStorage.removeItem("auth")
+          this.$router.go()
+        },
+        title: "Cierre de sesión",
+        desc: "El tiempo de sesión ha expirado,<br>¿ desea extender su estadia ?",
+      }), 1800000);
+    },
     swipe(dir) {
       const dataNavbar = this.$refs.navbar.dataNavbar
       const currentTab = this.$refs.navbar.currentTab
