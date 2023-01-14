@@ -554,6 +554,8 @@ export default {
       }).catch(err => {
         console.error(err)
         this.$alert("cancel", {desc: err.message})
+        if (err.message.includes("401")) localStorage.removeItem("auth")
+        this.$router.go()
       })
     },
     async saveFormProfile() {
