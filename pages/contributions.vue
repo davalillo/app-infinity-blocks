@@ -5,14 +5,16 @@
       <div id="contributions--top-wrapper" class="divcol center tcenter">
         <div class="divcol center" style="gap: 2px">
           <h4 class="p font3">Balance Wallet</h4>
-          <h4 class="p font3">6252 USDT</h4>
+          <h4 v-if="address !== null" class="p font3">6252 USDT</h4>
+          <v-btn v-else class="btn" style="--bg: #03BBD4" @click="conectWallet()">Conectar wallet</v-btn>
         </div>
 
         <v-sheet id="contributions--top-content" class="card divcol center" style="--fw: 400">
-          <span class="hspan anchorlinea" style="--b: -.2em;--t: auto; --h-line: 2px; --bg-line: #fff; --fs: max(15px, 3em);">100</span>
+          <!-- <span class="hspan anchorlinea" style="--b: -.2em;--t: auto; --h-line: 2px; --bg-line: #fff; --fs: max(15px, 3em);">100</span> -->
+          <v-text-field v-model="amountContribute"></v-text-field>
           <span class="hspan" style="--fs: max(15px, 2.5em);">USDT</span>
           
-          <v-btn class="btn" style="--bg: #03BBD4">Aportar</v-btn>
+          <v-btn class="btn" style="--bg: #03BBD4" @click="contribute()">Aportar</v-btn>
         </v-sheet>
       </div>
     </section>
@@ -67,6 +69,10 @@ export default {
   mixins: [computeds],
   data() {
     return {
+      dataUser: [],
+      userId: 0,
+      address: null,
+      amountContribute: 0, 
       dataContributions: [
         {
           price: 1000,
@@ -99,15 +105,46 @@ export default {
     }
   },
   mounted() {
-    this.getContributions()
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('MetaMask is installed!');
+    }
+    console.log(window.ethereum.isConnected())
+    // console.log(window.ethereum.networkVersion)
+    this.address = window.ethereum.selectedAddress
+    console.log(this.address, 'address')
+    this.dataUser = JSON.parse(localStorage.auth)
+    this.userId = this.dataUser.id
   },
   methods: {
-    
-    getContributions() {
-      this.$axios.get(`${this.baseDomainUrl}/aportaciones`).then(result => {
+    async conectWallet() {
+      await window.ethereum.request({ method: 'eth_requestAccounts' }).then(resp => {
+        console.log(resp)
+        this.address = resp[0]
+        this.$router.go(0)
+      }).catch(err => { console.log(err) })
+    },
+    getContributionUser() {
+      this.$axios.get(`${this.baseDomainUrl}/aportaciones/` + this.userId).then(result => {
         console.log(result)
       }).catch({})
-    }
+    },
+    contribute() {
+      this.$axios.post(`${this.baseDomainUrl}/aportaciones`, {
+        "userId": this.userId,
+        "valor": this.amountContribute,
+        "txnHash": this.address,
+      }).then(result => {
+        console.log(result)
+      }).catch({})
+    },
+    withdrawContributions() {
+      this.$axios.post(`${this.baseDomainUrl}/aportaciones/retirar`, {
+        "userId": this.userId,
+        "aportacionId": 0
+      }).then(result => {
+        console.log(result)
+      }).catch({})
+    },
   }
 };
 </script>
