@@ -61,9 +61,10 @@
 </template>
 
 <script>
-
-import computeds from '~/mixins/computeds'
+import detectEthereumProvider from '@metamask/detect-provider'
+import computeds from '~/mixins/computeds';
 // const wallet = useMetaMaskWallet()
+
 export default {
   name: "ContributionsPage",
   mixins: [computeds],
@@ -73,6 +74,7 @@ export default {
       userId: 0,
       address: null,
       amountContribute: 0, 
+      provider: null,
       dataContributions: [
         {
           price: 1000,
@@ -105,17 +107,38 @@ export default {
     }
   },
   mounted() {
-    if (typeof window.ethereum !== 'undefined') {
-      console.log('MetaMask is installed!');
-    }
-    console.log(window.ethereum.isConnected())
+    // if (typeof window.ethereum !== 'undefined') {
+    //   console.log('MetaMask is installed!');
+    // }
+    this.Provider()
+    
+    // console.log(window.ethereum.isConnected())
     // console.log(window.ethereum.networkVersion)
     this.address = window.ethereum.selectedAddress
-    console.log(this.address, 'address')
     this.dataUser = JSON.parse(localStorage.auth)
     this.userId = this.dataUser.id
   },
   methods: {
+    async Provider() {
+      this.provider = await detectEthereumProvider();
+      console.log(this.provider, 'proveedor')
+      if (this.provider) {
+        this.startApp(this.provider); // Initialize your app
+      } else {
+        console.log('Please install MetaMask!');
+      }
+    },
+    startApp(provider) {
+      // If the provider returned by detectEthereumProvider is not the same as
+      // window.ethereum, something is overwriting it, perhaps another wallet.
+      if(provider === window.ethereum) {
+        console.log('hay una sola cuenta')
+      }
+      if (provider !== window.ethereum) {
+        console.error('Do you have multiple wallets installed?');
+      }
+      // Access the decentralized web!
+    },
     async conectWallet() {
       await window.ethereum.request({ method: 'eth_requestAccounts' }).then(resp => {
         console.log(resp)
@@ -143,7 +166,7 @@ export default {
         "aportacionId": 0
       }).then(result => {
         console.log(result)
-      }).catch({})
+      }).catch(err => { console.log(err) })
     },
   }
 };
