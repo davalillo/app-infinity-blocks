@@ -59,8 +59,9 @@
 </template>
 
 <script>
-import computeds from '~/mixins/computeds'
 
+import computeds from '~/mixins/computeds'
+// const wallet = useMetaMaskWallet()
 export default {
   name: "ContributionsPage",
   mixins: [computeds],
@@ -98,18 +99,14 @@ export default {
     }
   },
   mounted() {
-    // if (typeof window.ethereum !== 'undefined') {
-    //   console.log('MetaMask is installed!');
-    //   window.ethereum.request({method: 'eth_requestAccounts'})
-    // }
-    this.conectWallet()
-    console.log(window.ethereum.isConnected())
+    this.getContributions()
   },
   methods: {
-    async conectWallet() {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0]
-      console.log(account)
+    
+    getContributions() {
+      this.$axios.get(`${this.baseDomainUrl}/aportaciones`).then(result => {
+        console.log(result)
+      }).catch({})
     }
   }
 };
