@@ -28,18 +28,20 @@
             type="number"
             @keyup="$event => $event.key === 'Enter' ? verificationCode() : ''"
           ></v-otp-input> -->
-          <v-text-field
-            v-model="otp"
-            hide-details solo
-            @keyup="$event => $event.key === 'Enter' ? verificationCode() : ''"
-          ></v-text-field>
+          <template v-if="params !== 'recover'">
+            <v-text-field
+              v-model="otp"
+              hide-details solo
+              @keyup="$event => $event.key === 'Enter' ? verificationCode() : ''"
+            ></v-text-field>
 
 
-          <v-btn
-            :disabled="!otp"
-            class="btn" style="--fs: max(13px, 1.6em)"
-            @click="verificationCode()"
-          >Verificar</v-btn>
+            <v-btn
+              :disabled="!otp"
+              class="btn" style="--fs: max(13px, 1.6em)"
+              @click="verificationCode()"
+            >Verificar</v-btn>
+          </template>
         </div>
 
         <div class="divcol" style="gap: 1em;">
@@ -75,7 +77,7 @@ export default {
   },
   computed: {
     params() {
-      return this.$route.params.verification
+      return this.$route.params.verification?.split(":")[1]
     },
     email() {
       return this.$store.state.currentEmailVerification.email
@@ -86,18 +88,22 @@ export default {
       this.$alert("cancel", {desc: "ha ocurrido un error por favor vuelva a intentarlo mas tarde"})
       this.$router.go(-1)
     }
-    // if (this.params?.split(":")[1] !== "login") this.sendEmail()
+    // if (this.params !== "login") this.sendEmail()
   },
   methods: {
     sendEmail() {
-      // request token endpoint
-      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarTokenCorreo`, {"email": this.email}).then(result => {
-        console.info(result.data) // console
-        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
-      }).catch(err => {
-        console.error(err)
-        this.$alert("cancel", {desc: err.message})
-      })
+      if (this.params === "recover") {
+        this.$alert("cancel", {desc: "no implementado aun"})
+      } else {
+        // request token endpoint
+        this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarTokenCorreo`, {"email": this.email}).then(result => {
+          console.info(result.data) // console
+          this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        }).catch(err => {
+          console.error(err)
+          this.$alert("cancel", {desc: err.message})
+        })
+      }
     },
     verificationCode() {
       if (!this.otp) return;
@@ -110,7 +116,7 @@ export default {
         // set current verification
         this.$store.commit("emailVerification", {token: this.otp, email: this.email})
         // redirection to previous page
-        this.$router.push(this.localePath(`/${this.params.split(":")[1]}`))
+        this.$router.push(this.localePath(`/${this.params}`))
       }).catch(err => {
         console.error(err)
         this.loadingBtnVerificationEmail = false

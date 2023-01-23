@@ -518,7 +518,7 @@ export default {
         this.$store.commit("emailVerification", {...this.formSendEmail})
         
         // redirection to code validation
-        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:recover"))
       }).catch(err => {
         console.error(err)
