@@ -110,9 +110,8 @@
             <v-text-field
               id="wallet_address"
               v-model="formIdentity.walletAddress"
-              append-icon="mdi-chevron-down"
               solo hide-details
-              :rules="rules.required"
+              :rules="rules.walletAddress"
               @keyup="$event => $event.key === 'enter' ? sendRequest() : ''"
             ></v-text-field>
           </div>
@@ -186,7 +185,7 @@ export default {
     },
     getDataIdentity() {
       // get verification endpoint
-      this.$axios.get(`${this.baseDomainUrl}/verification/${this.uid}`).then(result => {
+      this.$axios.get(`${this.baseDomainUrl}/verificacion/${this.uid}`).then(result => {
         console.info("<<--get data-->>", result.data) // console
         
         // set data form
@@ -199,15 +198,15 @@ export default {
       if (!this.$refs.formIdentity.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
       this.loadingBtnIdentity = true
 
-      console.log({userId: this.uid, ...this.formIdentity}) // error <---------------- 👈
-      // post verification endpoint
-      this.$axios.post(`${this.baseDomainUrl}/verification`, this.$formData({userId: this.uid, ...this.formIdentity}))
+      // post verification endpoint  // error al usar pasaporte, te pide que haya fotoReverso field <---------------- 👈
+      this.$axios.post(`${this.baseDomainUrl}/verificacion`, this.$formData({userId: this.uid, ...this.formIdentity}))
       .then(result => {
         console.info("<<--identity form-->>", result.data) // console
         this.loadingBtnIdentity = false
         
         this.$alert("success", {desc: "validacion exitosa"})
         this.$router.push(this.localePath("/profile"))
+        
       }).catch(err => {
         console.error(err)
         this.loadingBtnIdentity = false
