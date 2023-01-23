@@ -560,6 +560,7 @@ export default {
     },
     async saveFormProfile() {
       if (!this.$refs.formProfile.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnProfile = true
 
       try {
         if (this.birthday_day || this.birthday_month || this.birthday_year) {
@@ -570,22 +571,28 @@ export default {
             dayOfWeek: this.onlyDay,
           }
         }
-        console.log("information data", this.formProfile) // error <---------------- 👈
+        console.log("information data", this.formProfile) // error no reconoce formato de fecha <---------------- 👈
 
         // information endpoint
         await this.$axios.put(`${this.baseDomainUrl}/configuracion/informacion`, this.formProfile)
         .then(result => console.info("<<--information endpoint-->>", result)) // console
-        
-        console.log("photo utl", this.user.urlFotoPerfil) // error <---------------- 👈
+
         // photo endpoint
-        if (this.user.urlFotoPerfil) await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, this.user.urlFotoPerfil)
-        .then(result => console.info("<<--photo endpoint-->>", result)) // console
+        if (this.user.urlFotoPerfil) {
+          const file = new FormData
+          file.append("foto", this.user.urlFotoPerfil)
+
+          await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, file) // error no devuelve foto de perfil <---------------- 👈
+          .then(result => console.info("<<--photo endpoint-->>", result)) // console
+        }
         
         this.$alert("success", {desc: "datos guardados correctamente"})
+        this.loadingBtnProfile = false
         // this.$router.go()
       } catch(err) {
         console.error(err)
         this.$alert("cancel", {desc: err.message})
+        this.loadingBtnProfile = false
       }
     },
     saveBeneficiary() {
