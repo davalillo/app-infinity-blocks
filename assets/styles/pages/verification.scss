@@ -76,6 +76,7 @@
 
     .v-input {
       --bg: var(--primary);
+      input, .v-select__selection {text-transform: capitalize}
     }
     .container-label {
       label {
@@ -160,4 +161,7 @@
 
 .desplegableMenuVerificationAccount .v-list {
   background-color: var(--active) !important;
+  &-item {
+    text-transform: capitalize;
+  }
 }
