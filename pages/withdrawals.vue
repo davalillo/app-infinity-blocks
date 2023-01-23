@@ -2,8 +2,8 @@
   <div id="withdrawals" class="divcol center" style="gap: 1.8em">
     <v-card class="card divcol center tcenter" style="--bg: #2B4DDF; --w: var(--w-items); gap: 0.625em">
       <h2 class="p font1" style="--fw: 600">BENEFICIOS DISPONIBLES</h2>
-      <h3 class="p" style="--fw: 400">2550 USDT</h3>
-      <v-btn class="btn" style="--bg: #03BBD4">Solicitar</v-btn>
+      <h3 class="p" style="--fw: 400">{{ retiros.beneficiosDisponbles }}</h3>
+      <v-btn class="btn" style="--bg: #03BBD4" @click="confirm()">Solicitar</v-btn>
     </v-card>
 
     <h2
@@ -102,6 +102,8 @@ export default {
           date: "8/11/22",
         },
       ],
+      userId: null,
+      retiros: 0,
     }
   },
   head() {
@@ -110,7 +112,59 @@ export default {
       title,
     }
   },
+  mounted() {
+    this.dataUser = JSON.parse(localStorage.auth)
+    this.userId = this.dataUser.id
+    this.getWithdraw()
+  },
   methods: {
+    getWithdraw() {
+      this.$axios.get(`${this.baseDomainUrl}/retiros/` + this.userId).then(result => {
+        console.log(result, 'result retiros')
+        this.retiros = result
+      }).catch(err => { console.log(err) })
+    },
+    benefitRequestWithdrawal() {
+      this.$axios.post(`${this.baseDomainUrl}/retiros/beneficioSolicitar/`).then(result => {
+        console.log(result)
+        this.msg()
+      }).catch(err => { 
+        console.log(err, 'beneficio soli')
+        this.msg()
+      })
+    },
+    benefitCorfirmWithdrawal() {
+      this.$axios.post(`${this.baseDomainUrl}/retiros/beneficioConfirmar/`, {
+        "retiroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "codigoConfirmacion": 0
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { 
+        console.log(err)
+      })
+    },
+    requestWithdrawal() {
+      this.$axios.post(`${this.baseDomainUrl}/retiros/solicitar`, {
+        "retiroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
+    confirm() {
+      this.$confirmMsg({
+        fOpen: () => {},
+        fSuccess: () => { this.benefitRequestWithdrawal() },
+        fCancel: () => {},
+        title: "Confirmación",
+        desc: "¿Está seguro de realizar la solicitud de retiro?",
+      })
+    },
+    msg() {
+      this.$confirmMsg({
+        title: "Revise su corre",
+        desc: "Debe revisar su bandeja de entrada o susmensajes de spam para confirmar el codigo",
+      })
+    },
   }
 };
 </script>

@@ -97,6 +97,7 @@ export default {
     return {
       activate: false,
       bonbarPercent: 75,
+      userId: null,
     }
   },
   head() {
@@ -105,7 +106,44 @@ export default {
       title,
     }
   },
+  mounted() {
+    this.dataUser = JSON.parse(localStorage.auth)
+    this.userId = this.dataUser.id
+    this.getMembership()
+  },
   methods: {
+    getMembership() {
+      this.$axios.get(`${this.baseDomainUrl}/asesores/` + this.userId).then(result => {
+        console.log(result, 'get membresia')
+      }).catch(err => { console.log(err, 'no tiene membresia') })
+    },
+    requestBonus() {
+      this.$axios.post(`${this.baseDomainUrl}/asesores/solicitarBono`, {
+        "tipo": "CarreraEnum"
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
+    validateBonus() {
+      this.$axios.post(`${this.baseDomainUrl}/asesores/validarBono`, {
+        "tipo": "CarreraEnum",
+        "codigoConfirmacion": 0
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
+    getReport() {
+      this.$axios.get(`${this.baseDomainUrl}/asesores/informe/` + this.userId).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
+    membership() {
+      this.$axios.post(`${this.baseDomainUrl}/asesores/alta/`, {
+        "txnHash": "/0x4d3adfe8A9f892Aa0214bbeabE46c850CE2EC07c1B565CAa8e45c42222E55d15ea/"
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
   }
 };
 </script>

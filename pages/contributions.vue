@@ -5,14 +5,18 @@
       <div id="contributions--top-wrapper" class="divcol center tcenter">
         <div class="divcol center" style="gap: 2px">
           <h4 class="p font3">Balance Wallet</h4>
-          <h4 class="p font3">6252 USDT</h4>
+          <h4 v-if="address !== null" class="p font3">{{ balanceUSD }} USD</h4>
+          <h4 v-else class="p font3">Conecta tu wallet</h4>
+          <!-- <v-btn v-else class="btn" style="--bg: #03BBD4" @click="conectWallet()">Conecta tu wallet</v-btn> -->
         </div>
 
         <v-sheet id="contributions--top-content" class="card divcol center" style="--fw: 400">
-          <span class="hspan anchorlinea" style="--b: -.2em;--t: auto; --h-line: 2px; --bg-line: #fff; --fs: max(15px, 3em);">100</span>
+          <!-- <span class="hspan anchorlinea" style="--b: -.2em;--t: auto; --h-line: 2px; --bg-line: #fff; --fs: max(15px, 3em);">100</span> -->
+          <v-text-field v-model="amountContribute"></v-text-field>
           <span class="hspan" style="--fs: max(15px, 2.5em);">USDT</span>
           
-          <v-btn class="btn" style="--bg: #03BBD4">Aportar</v-btn>
+          <v-btn v-if="address" :disabled="amountContribute < 10 || amountContribute > 1000000" class="btn" style="--bg: #03BBD4" @click="contribute()">Aportar</v-btn>
+          <v-btn v-else class="btn" style="--bg: #03BBD4" @click="connect()">Conectar Wallet</v-btn>
         </v-sheet>
       </div>
     </section>
@@ -59,13 +63,26 @@
 </template>
 
 <script>
-import computeds from '~/mixins/computeds'
+import Web3 from 'web3'
+import detectEthereumProvider from '@metamask/detect-provider'
+import computeds from '~/mixins/computeds';
+
+const web3BSC = new Web3(
+  new Web3.providers.HttpProvider(
+    `https://bsc-testnet.nodereal.io/v1/927cef32ddf04e73a83cad58991a6974`
+  )
+);
 
 export default {
   name: "ContributionsPage",
   mixins: [computeds],
   data() {
     return {
+      dataUser: [],
+      userId: 0,
+      address: null,
+      amountContribute: 0, 
+      provider: null,
       dataContributions: [
         {
           price: 1000,
@@ -89,6 +106,7 @@ export default {
           barPercent: 100,
         },
       ],
+      balanceUSD: 0,
     }
   },
   head() {
@@ -97,7 +115,93 @@ export default {
       title,
     }
   },
+  mounted() {
+    // if (typeof window.ethereum !== 'undefined') {
+    //   console.log('MetaMask is installed!');
+    // }
+    this.Provider()
+    
+    // console.log(window.ethereum.isConnected())
+    // console.log(window.ethereum.networkVersion)
+    this.address = window.ethereum.selectedAddress
+    this.dataUser = JSON.parse(localStorage.auth)
+    this.userId = this.dataUser.id
+    this.getBalance()
+  },
   methods: {
+    async Provider() {
+      this.provider = await detectEthereumProvider();
+      console.log(this.provider, 'proveedor')
+      if (this.provider) {
+        this.startApp(this.provider); // Initialize your app
+      } else {
+        console.log('Please install MetaMask!');
+      }
+    },
+    startApp(provider) {
+      // If the provider returned by detectEthereumProvider is not the same as
+      // window.ethereum, something is overwriting it, perhaps another wallet.
+      if(provider === window.ethereum) {
+        console.log('hay una sola cuenta')
+      }
+      if (provider !== window.ethereum) {
+        console.error('Do you have multiple wallets installed?');
+      }
+      // Access the decentralized web!
+    },
+    async conectWallet() {
+      await window.ethereum.request({ method: 'eth_requestAccounts' }).then(resp => {
+        console.log(resp)
+        this.address = resp[0]
+        this.$router.go(0)
+      }).catch(err => { console.log(err) })
+    },
+    connect() {
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then(resp => { console.log(resp) })
+        .catch((err) => {
+          if (err.code === 4001) {
+            // EIP-1193 userRejectedRequest error
+            // If this happens, the user rejected the connection request.
+            console.log('Please connect to MetaMask.');
+          } else {
+            console.error(err);
+          }
+        });
+    },
+    async getBalance() {
+      const balanceBSC = await web3BSC.eth.getBalance(this.address)
+      const balance = parseInt(balanceBSC) / 1000000000000000000
+      this.$axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(resp => {
+        console.log(resp.data[0].current_price)
+        this.balanceUSD = balance * resp.data[0].current_price
+        console.log(this.balanceUSD, 'balance')
+      })
+      
+    },
+    getContributionUser() {
+      this.$axios.get(`${this.baseDomainUrl}/aportaciones/` + this.userId).then(result => {
+        console.log(result)
+      }).catch({})
+    },
+    contribute() {
+      this.$axios.post(`${this.baseDomainUrl}/aportaciones`, {
+        "userId": this.userId,
+        "valor": this.amountContribute,
+        "txnHash": this.address,
+      }).then(result => {
+        console.log(result)
+      }).catch({})
+    },
+    withdrawContributions() {
+      this.$axios.post(`${this.baseDomainUrl}/aportaciones/retirar`, {
+        "userId": this.userId,
+        "aportacionId": 0
+      }).then(result => {
+        console.log(result)
+      }).catch(err => { console.log(err) })
+    },
   }
 };
 </script>
