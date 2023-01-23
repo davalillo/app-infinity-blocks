@@ -33,7 +33,7 @@
           <div class="divcol" style="gap: 10px">
             <div class="container-label">
               <label for="photo-document" class="aend">Foto de Documento
-                <span>(ambos lados)</span>
+                <span v-if="formIdentity.tipoDocumento !== 'Pasaporte'">(ambos lados)</span>
               </label>
             </div>
             
