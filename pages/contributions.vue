@@ -5,7 +5,7 @@
       <div id="contributions--top-wrapper" class="divcol center tcenter">
         <div class="divcol center" style="gap: 2px">
           <h4 class="p font3">Balance Wallet</h4>
-          <h4 v-if="address !== null" class="p font3">{{ balanceUSD }} USD</h4>
+          <h4 v-if="address !== null" class="p font3">{{ balanceUSD.toFixed(2) }} USD</h4>
           <h4 v-else class="p font3">Conecta tu wallet</h4>
           <!-- <v-btn v-else class="btn" style="--bg: #03BBD4" @click="conectWallet()">Conecta tu wallet</v-btn> -->
         </div>
@@ -129,6 +129,7 @@ export default {
     this.userId = this.dataUser.id
     this.getBalance()
     this.gasPrice()
+    this.balance()
   },
   methods: {
     async Provider() {
@@ -161,7 +162,11 @@ export default {
     connect() {
       ethereum
         .request({ method: 'eth_requestAccounts' })
-        .then(resp => { console.log(resp) })
+        .then(resp => { 
+          console.log(resp)
+          this.address = resp[0]
+          this.$router.go(0)
+        })
         .catch((err) => {
           if (err.code === 4001) {
             // EIP-1193 userRejectedRequest error
@@ -187,14 +192,14 @@ export default {
         console.log(result)
       }).catch({})
     },
-    contribute() {
+    contribute(hash) {
       this.$axios.post(`${this.baseDomainUrl}/aportaciones`, {
-        "userId": this.userId,
-        "valor": this.amountContribute,
-        "txnHash": this.address,
-      }).then(result => {
-        console.log(result)
-      }).catch({})
+            "userId": this.userId,
+            "valor": this.amountContribute,
+            "txnHash": hash,
+          }).then(result => {
+            console.log(result)
+          }).catch({})
     },
     withdrawContributions() {
       this.$axios.post(`${this.baseDomainUrl}/aportaciones/retirar`, {
@@ -205,33 +210,44 @@ export default {
       }).catch(err => { console.log(err) })
     },
     sendTransaction() {
-      this.$axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(resp => {
-        const monto = this.amountContribute / resp.data[0].current_price
+      this.$axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(async resp => {
+        console.log(resp.data[0].current_price)
+        const monto = (this.amountContribute / resp.data[0].current_price) * 1000000000000000000
+        console.log(monto)
         const params = [
           {
             from: this.address,
             to: '0xC0118EDec2296733ED668cc3c63ea88163BF13FE',
             gas: '21000', // 30400
             gasPrice: '10000000000', // 10000000000000
-            value: parseFloat(monto), // 2441406250 
+            value: web3BSC.utils.toHex(monto), // 2441406250 
             data:
               '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
           },
         ]
-        ethereum.request({ method: 'eth_sendTransaction', params }).then((result) => {
+        await ethereum.request({ method: 'eth_sendTransaction', params }).then((result) => {
           // The result varies by RPC method.
           // For example, this method will return a transaction hash hexadecimal string on success.
           console.log(result)
+          this.contribute(result)
         }).catch((error) => {
           console.log(error)
           // If the request fails, the Promise will reject with an error.
-        });
-      })      
+        });   
+      })
     },
     async gasPrice() {
       const gasPrice = await web3BSC.eth.getGasPrice()
       console.log(gasPrice, 'gasPrice')
     },
+    async balance() {
+      const params = [this.address]
+      await ethereum.request({ method: 'eth_getBalance', params }).then(result => {
+        const balance = result
+        const number = web3BSC.utils.hexToNumberString(balance)
+        console.log(number/1000000000000000000)
+      })
+    }
   }
 };
 </script>
