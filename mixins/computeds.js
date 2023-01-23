@@ -20,6 +20,10 @@ export default {
           (v) => !!v || "Field required",
           (v) => /^[0-9]{5,15}$/.test(v) || 'Incorrect Format',
         ],
+        walletAddress: [
+          (v) => !!v || "Field required",
+          (v) => /^(0x){1}[0-9a-fA-F]{40}$/.test(v) || 'Incorrect Format',
+        ],
       }
     }
   },
