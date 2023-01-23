@@ -133,7 +133,7 @@
           </ul>
 
           <v-btn
-            :disabled="!downloadBtn || loadingBtnDownload"
+            :disabled="!approved || loadingBtnDownload"
             class="btn" style="--fs: max(15px, 1.2em); --bg: var(--active); --p: .3em .5em"
             :loading="loadingBtnDownload" @click="downloadForm()">Descargar Formulario</v-btn>
         </v-card>
@@ -151,7 +151,7 @@ export default {
   layout: "empty-layout",
   data() {
     return {
-      documentTypes: ["Pasaporte", "Documento de Identificación Nacional", "Licencia de conducir"],
+      documentTypes: ["pasaporte", "documento de identificación nacional", "licencia de conducir"],
       formIdentity: {
         tipoDocumento: undefined,
         fotoFrente: undefined,
@@ -164,7 +164,8 @@ export default {
       faceIdentityImg: undefined,
       loadingBtnIdentity: undefined,
       loadingBtnDownload: undefined,
-      downloadBtn: false,
+      verificationId: undefined,
+      approved: undefined,
     }
   },
   head() {
@@ -187,9 +188,13 @@ export default {
       // get verification endpoint
       this.$axios.get(`${this.baseDomainUrl}/verificacion/${this.uid}`).then(result => {
         console.info("<<--get data-->>", result.data) // console
-        
+
+        this.verificationId = result.data.id
+        this.approved = result.data.aprobado
+
         // set data form
-        this.formIdentity = result.data
+        this.$equalData(this.formIdentity, result.data)
+
         // enable download button if approved
         this.downloadBtn = result.data.aprobado
       }).catch(err => console.error(err))
@@ -204,7 +209,11 @@ export default {
         console.info("<<--identity form-->>", result.data) // console
         this.loadingBtnIdentity = false
         
-        this.$alert("success", {desc: "validacion exitosa"})
+        this.$alert("success", {
+          title: "validacion exitosa",
+          desc: "El proceso de validación puede tardar unos cuantos minutos o días",
+          timeout: 8000
+        })
         this.$router.push(this.localePath("/profile"))
         
       }).catch(err => {
