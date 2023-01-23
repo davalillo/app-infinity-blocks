@@ -205,25 +205,28 @@ export default {
       }).catch(err => { console.log(err) })
     },
     sendTransaction() {
-      const params = [
-        {
-          from: this.address,
-          to: '0xC0118EDec2296733ED668cc3c63ea88163BF13FE',
-          gas: '21000', // 30400
-          gasPrice: '10000000000', // 10000000000000
-          value: this.amountContribute, // 2441406250
-          data:
-            '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
-        },
-      ];
-
-      ethereum.request({ method: 'eth_sendTransaction', params }).then((result) => {
-        // The result varies by RPC method.
-        // For example, this method will return a transaction hash hexadecimal string on success.
-      }).catch((error) => {
-        console.log(error)
-        // If the request fails, the Promise will reject with an error.
-      });
+      this.$axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(resp => {
+        const monto = this.amountContribute / resp.data[0].current_price
+        const params = [
+          {
+            from: this.address,
+            to: '0xC0118EDec2296733ED668cc3c63ea88163BF13FE',
+            gas: '21000', // 30400
+            gasPrice: '10000000000', // 10000000000000
+            value: parseFloat(monto), // 2441406250 
+            data:
+              '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
+          },
+        ]
+        ethereum.request({ method: 'eth_sendTransaction', params }).then((result) => {
+          // The result varies by RPC method.
+          // For example, this method will return a transaction hash hexadecimal string on success.
+          console.log(result)
+        }).catch((error) => {
+          console.log(error)
+          // If the request fails, the Promise will reject with an error.
+        });
+      })      
     },
     async gasPrice() {
       const gasPrice = await web3BSC.eth.getGasPrice()
