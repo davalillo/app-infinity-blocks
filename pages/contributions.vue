@@ -15,7 +15,7 @@
           <v-text-field v-model="amountContribute"></v-text-field>
           <span class="hspan" style="--fs: max(15px, 2.5em);">USDT</span>
           
-          <v-btn v-if="address" :disabled="amountContribute < 10 || amountContribute > 1000000" class="btn" style="--bg: #03BBD4" @click="contribute()">Aportar</v-btn>
+          <v-btn v-if="address" :disabled="amountContribute < 10 || amountContribute > 1000000" class="btn" style="--bg: #03BBD4" @click="sendTransaction()">Aportar</v-btn>
           <v-btn v-else class="btn" style="--bg: #03BBD4" @click="connect()">Conectar Wallet</v-btn>
         </v-sheet>
       </div>
@@ -66,6 +66,7 @@
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
 import computeds from '~/mixins/computeds';
+const ethereum = window.ethereum
 
 const web3BSC = new Web3(
   new Web3.providers.HttpProvider(
@@ -127,6 +128,7 @@ export default {
     this.dataUser = JSON.parse(localStorage.auth)
     this.userId = this.dataUser.id
     this.getBalance()
+    this.gasPrice()
   },
   methods: {
     async Provider() {
@@ -157,7 +159,7 @@ export default {
       }).catch(err => { console.log(err) })
     },
     connect() {
-      window.ethereum
+      ethereum
         .request({ method: 'eth_requestAccounts' })
         .then(resp => { console.log(resp) })
         .catch((err) => {
@@ -201,6 +203,31 @@ export default {
       }).then(result => {
         console.log(result)
       }).catch(err => { console.log(err) })
+    },
+    sendTransaction() {
+      const params = [
+        {
+          from: this.address,
+          to: '0xC0118EDec2296733ED668cc3c63ea88163BF13FE',
+          gas: '21000', // 30400
+          gasPrice: '10000000000', // 10000000000000
+          value: this.amountContribute, // 2441406250
+          data:
+            '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
+        },
+      ];
+
+      ethereum.request({ method: 'eth_sendTransaction', params }).then((result) => {
+        // The result varies by RPC method.
+        // For example, this method will return a transaction hash hexadecimal string on success.
+      }).catch((error) => {
+        console.log(error)
+        // If the request fails, the Promise will reject with an error.
+      });
+    },
+    async gasPrice() {
+      const gasPrice = await web3BSC.eth.getGasPrice()
+      console.log(gasPrice, 'gasPrice')
     },
   }
 };
