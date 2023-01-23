@@ -5,8 +5,9 @@
       <div id="contributions--top-wrapper" class="divcol center tcenter">
         <div class="divcol center" style="gap: 2px">
           <h4 class="p font3">Balance Wallet</h4>
-          <h4 v-if="address !== null" class="p font3">6252 USDT</h4>
-          <v-btn v-else class="btn" style="--bg: #03BBD4" @click="conectWallet()">Conectar wallet</v-btn>
+          <h4 v-if="address !== null" class="p font3">{{ balanceUSD }} USD</h4>
+          <h4 v-else class="p font3">Conecta tu wallet</h4>
+          <!-- <v-btn v-else class="btn" style="--bg: #03BBD4" @click="conectWallet()">Conecta tu wallet</v-btn> -->
         </div>
 
         <v-sheet id="contributions--top-content" class="card divcol center" style="--fw: 400">
@@ -14,7 +15,8 @@
           <v-text-field v-model="amountContribute"></v-text-field>
           <span class="hspan" style="--fs: max(15px, 2.5em);">USDT</span>
           
-          <v-btn class="btn" style="--bg: #03BBD4" @click="contribute()">Aportar</v-btn>
+          <v-btn v-if="address" :disabled="amountContribute < 10 || amountContribute > 1000000" class="btn" style="--bg: #03BBD4" @click="contribute()">Aportar</v-btn>
+          <v-btn v-else class="btn" style="--bg: #03BBD4" @click="connect()">Conectar Wallet</v-btn>
         </v-sheet>
       </div>
     </section>
@@ -61,9 +63,15 @@
 </template>
 
 <script>
+import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
 import computeds from '~/mixins/computeds';
-// const wallet = useMetaMaskWallet()
+
+const web3BSC = new Web3(
+  new Web3.providers.HttpProvider(
+    `https://bsc-testnet.nodereal.io/v1/927cef32ddf04e73a83cad58991a6974`
+  )
+);
 
 export default {
   name: "ContributionsPage",
@@ -98,6 +106,7 @@ export default {
           barPercent: 100,
         },
       ],
+      balanceUSD: 0,
     }
   },
   head() {
@@ -117,6 +126,7 @@ export default {
     this.address = window.ethereum.selectedAddress
     this.dataUser = JSON.parse(localStorage.auth)
     this.userId = this.dataUser.id
+    this.getBalance()
   },
   methods: {
     async Provider() {
@@ -145,6 +155,30 @@ export default {
         this.address = resp[0]
         this.$router.go(0)
       }).catch(err => { console.log(err) })
+    },
+    connect() {
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then(resp => { console.log(resp) })
+        .catch((err) => {
+          if (err.code === 4001) {
+            // EIP-1193 userRejectedRequest error
+            // If this happens, the user rejected the connection request.
+            console.log('Please connect to MetaMask.');
+          } else {
+            console.error(err);
+          }
+        });
+    },
+    async getBalance() {
+      const balanceBSC = await web3BSC.eth.getBalance(this.address)
+      const balance = parseInt(balanceBSC) / 1000000000000000000
+      this.$axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false').then(resp => {
+        console.log(resp.data[0].current_price)
+        this.balanceUSD = balance * resp.data[0].current_price
+        console.log(this.balanceUSD, 'balance')
+      })
+      
     },
     getContributionUser() {
       this.$axios.get(`${this.baseDomainUrl}/aportaciones/` + this.userId).then(result => {
