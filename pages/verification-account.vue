@@ -215,7 +215,7 @@ export default {
         console.info("<<--identity form-->>", result.data) // console
         this.loadingBtnIdentity = false
         
-        const timeout = 6700
+        const timeout = 5000
         setTimeout(() => this.$router.push(this.localePath("/profile")), timeout);
         
         this.$alert("success", {
