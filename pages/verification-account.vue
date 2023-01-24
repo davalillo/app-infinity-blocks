@@ -197,7 +197,7 @@ export default {
 
         // enable download button if approved
         this.downloadBtn = result.data.aprobado
-      }).catch(err => console.error(err))
+      }).catch(err => console.error(err, err.response.data.errors ?? err.response.data.title))
     },
     sendRequest() {
       if (!this.$refs.formIdentity.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
@@ -217,7 +217,7 @@ export default {
         this.$router.push(this.localePath("/profile"))
         
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnIdentity = false
         this.$alert("cancel", {desc: err.message})
       })

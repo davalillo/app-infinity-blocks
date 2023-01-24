@@ -449,7 +449,7 @@ export default {
         this.formRegister.patrocinador = result.data
         this.blockPartner = true
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
       })
     },
@@ -472,7 +472,7 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnLogin = false
         this.$alert("cancel", {
           desc: err.response.data.errors.$[0]
@@ -494,7 +494,7 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnRegister = false
         this.$alert("cancel", {
           desc: err.response.data.errors.$[0]
@@ -517,7 +517,7 @@ export default {
         // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:recover"))
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnSendEmail = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -535,7 +535,7 @@ export default {
         this.$alert("success", {desc: "contraseña recuperada exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnRecover = false
         this.$alert("cancel", {desc: err.message})
       })

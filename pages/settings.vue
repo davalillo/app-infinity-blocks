@@ -541,7 +541,7 @@ export default {
     getDataUser() {
       this.$axios.get(`${this.baseDomainUrl}/configuracion/${this.uid}`)
       .then(result => {
-        console.info(result.data) // console
+        console.info(result.data) // console // <-- no me llega el estado de bloqueo de la cuenta y la foto de usuario tampoco 👈
 
         // set user data
         this.user = result.data.perfil
@@ -557,7 +557,7 @@ export default {
         // set beneficiaries
         this.dataBeneficiaries = result.data.beneficiarios
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
         if (err.message.includes("401")) localStorage.removeItem("auth")
         this.$router.go()
@@ -570,7 +570,6 @@ export default {
       try {
         if (this.birthday_day && this.birthday_month && this.birthday_year) 
           this.formProfile.fechaNacimiento = this.fullBirthday
-        console.log("information data", this.formProfile) // error no reconoce formato de fecha <---------------- 👈
 
         // information endpoint
         await this.$axios.put(`${this.baseDomainUrl}/configuracion/informacion`, this.formProfile)
@@ -581,7 +580,7 @@ export default {
           const file = new FormData
           file.append("foto", this.user.urlFotoPerfil)
 
-          await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, file) // error no devuelve foto de perfil <---------------- 👈
+          await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, file)
           .then(result => console.info("<<--photo endpoint-->>", result)) // console
         }
         
@@ -589,7 +588,7 @@ export default {
         this.loadingBtnProfile = false
         // this.$router.go()
       } catch(err) {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
         this.loadingBtnProfile = false
       }
@@ -606,7 +605,7 @@ export default {
         this.$alert("success", {desc: "beneficiario guardado exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -620,16 +619,17 @@ export default {
       this.formBeneficiaries = newItem
     },
     editBeneficiary() {
-      console.log(this.currentBeneficiaryEdit) // error <---------------- 👈
+      delete Object.assign(this.currentBeneficiaryEdit, { beneficiarioId: this.currentBeneficiaryEdit.id }).id
+      
       // edit beneficiary endpoint
-      this.$axios.put(`${this.baseDomainUrl}/configuracion/beneficiario/${this.currentBeneficiaryEdit.id}`)
+      this.$axios.put(`${this.baseDomainUrl}/configuracion/beneficiario`, this.currentBeneficiaryEdit)
       .then(result => {
         console.info("<<--edit beneficiary-->>", result.data) // console
         
         this.$alert("success", {desc: "beneficiario editado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -643,7 +643,7 @@ export default {
         this.$alert("success", {desc: "beneficiario eliimnado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -678,7 +678,7 @@ export default {
         this.$alert("success", {desc: "su cuenta ha sido congelada"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnFreezeAccount = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -695,7 +695,7 @@ export default {
         this.$alert("success", {desc: "su cuenta ha sido descongelada"})
         this.$router.go()
       }).catch(err => {
-        console.error(err, err.response.data.errors)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnFreezeAccount = false
         this.$alert("cancel", {desc: err.message})
       })
