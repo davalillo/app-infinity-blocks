@@ -474,9 +474,8 @@ export default {
       }).catch(err => {
         console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnLogin = false
-        this.$alert("cancel", {
-          desc: err.response.data.errors.$[0]
-        })
+        const errMessage = Object.keys(err.response.data.errors).map(key => err.response.data.errors[key][0]).join(", ")
+        this.$alert("cancel", {desc: errMessage})
       })
     },
     register() {
@@ -496,9 +495,8 @@ export default {
       }).catch(err => {
         console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnRegister = false
-        this.$alert("cancel", {
-          desc: err.response.data.errors.$[0]
-        })
+        const errMessage = Object.keys(err.response.data.errors).map(key => err.response.data.errors[key][0]).join(", ")
+        this.$alert("cancel", {desc: errMessage})
       })
     },
     sendEmail() {
