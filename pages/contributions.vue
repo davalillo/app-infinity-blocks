@@ -29,20 +29,20 @@
       <div class="divcol" style="gap: inherit">
         <v-card v-for="(item, i) in dataContributions" :key="i" class="card grid" style="--bg: var(--accent)">
           <div class="divcol jcenter anchorlineb font1">
-            <span class="hspan">{{item.price}} USDT</span>
-            <span class="hspan tup">{{item.state}}</span>
+            <span class="hspan">{{item.valor}} USDT</span>
+            <span class="hspan tup">{{item.estado}}</span>
             <span>INICIA: {{item.start_date}}</span>
-            <span style="white-space: nowrap">FIN PENALIDAD: {{item.penality_date}}</span>
+            <span style="white-space: nowrap">FIN PENALIDAD: {{item.fechaFinPenalizacion}}</span>
           </div>
 
           <div class="divcol" style="gap: 15px">
             <v-slider
-              v-model="item.barPercent"
+              v-model="item.progresoPenalizacion"
               readonly
               :style="`--bg-image: url(${require(`assets/sources/images/${
-                item.state === 'en proceso' ? 'progress-in-process'
-                : item.state === 'activo' ? 'progress-active'
-                : item.state === 'retirando' ? 'progress-withdrawing' : ''
+                item.estado === 'PendienteConfirmacion' ? 'progress-in-process'
+                : item.estado === 'penalizado' ? 'progress-active'
+                : item.estado === 'disponible' ? 'progress-withdrawing' : ''
               }.png`)})`"
               hide-details
             ></v-slider>
@@ -50,9 +50,9 @@
             <button class="alignr">
               <img
                 :src="require(`~/assets/sources/icons/${
-                  item.state === 'en proceso' ? 'in-process'
-                  : item.state === 'activo' ? 'active'
-                  : item.state === 'retirando' ? 'withdrawing' : ''
+                  item.estado === 'PendienteConfirmacion' ? 'in-process'
+                  : item.estado === 'penalizado' ? 'active'
+                  : item.estado === 'disponible' ? 'withdrawing' : ''
                 }.svg`)" alt="action icon" style="--w: 30px">
             </button>
           </div>
@@ -67,7 +67,8 @@ import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
 import computeds from '~/mixins/computeds';
 const ethereum = window.ethereum
-
+// const receiver = '0xC0118EDec2296733ED668cc3c63ea88163BF13FE'
+const receiver = '0x849C88F6696a65d68fcD517d1775a282c38cF401'
 const web3BSC = new Web3(
   new Web3.providers.HttpProvider(
     `https://bsc-testnet.nodereal.io/v1/927cef32ddf04e73a83cad58991a6974`
@@ -85,27 +86,27 @@ export default {
       amountContribute: 0, 
       provider: null,
       dataContributions: [
-        {
-          price: 1000,
-          state: "en proceso",
-          start_date: "10 / Nov / 2023",
-          penality_date: "10 / Nov / 2023",
-          barPercent: 10,
-        },
-        {
-          price: 1000,
-          state: "activo",
-          start_date: "08 / Jun / 2023",
-          penality_date: "08 / Jun / 2023",
-          barPercent: 50,
-        },
-        {
-          price: 1000,
-          state: "retirando",
-          start_date: "14 / Nov / 2023",
-          penality_date: "14 / Nov / 2023",
-          barPercent: 100,
-        },
+        // {
+        //   price: 1000,
+        //   state: "en proceso",
+        //   start_date: "10 / Nov / 2023",
+        //   penality_date: "10 / Nov / 2023",
+        //   barPercent: 10,
+        // },
+        // {
+        //   price: 1000,
+        //   state: "activo",
+        //   start_date: "08 / Jun / 2023",
+        //   penality_date: "08 / Jun / 2023",
+        //   barPercent: 50,
+        // },
+        // {
+        //   price: 1000,
+        //   state: "retirando",
+        //   start_date: "14 / Nov / 2023",
+        //   penality_date: "14 / Nov / 2023",
+        //   barPercent: 100,
+        // },
       ],
       balanceUSD: 0,
     }
@@ -130,6 +131,7 @@ export default {
     this.getBalance()
     this.gasPrice()
     this.balance()
+    this.getContributionUser()
   },
   methods: {
     async Provider() {
@@ -165,7 +167,7 @@ export default {
         .then(resp => { 
           console.log(resp)
           this.address = resp[0]
-          this.$router.go(0)
+          this.addSmartChain()
         })
         .catch((err) => {
           if (err.code === 4001) {
@@ -189,17 +191,22 @@ export default {
     },
     getContributionUser() {
       this.$axios.get(`${this.baseDomainUrl}/aportaciones/` + this.userId).then(result => {
-        console.log(result)
+        console.log(result.data, 'resultado get contribute')
+        result.data.forEach(item => {
+          this.dataContributions.push(item)
+        });
       }).catch({})
     },
     contribute(hash) {
+      const amountContribute = parseFloat(this.amountContribute)
+      // console.log(typeof(amountContribute), 'tipo de monto')
       this.$axios.post(`${this.baseDomainUrl}/aportaciones`, {
-            "userId": this.userId,
-            "valor": this.amountContribute,
-            "txnHash": hash,
-          }).then(result => {
-            console.log(result)
-          }).catch({})
+        "userId": this.userId,
+        "valor": amountContribute,
+        "txnHash": hash,
+      }).then(result => {
+        console.log(result)
+      }).catch({})
     },
     withdrawContributions() {
       this.$axios.post(`${this.baseDomainUrl}/aportaciones/retirar`, {
@@ -217,7 +224,7 @@ export default {
         const params = [
           {
             from: this.address,
-            to: '0xC0118EDec2296733ED668cc3c63ea88163BF13FE',
+            to: receiver,
             gas: '21000', // 30400
             gasPrice: '10000000000', // 10000000000000
             value: web3BSC.utils.toHex(monto), // 2441406250 
@@ -247,7 +254,26 @@ export default {
         const number = web3BSC.utils.hexToNumberString(balance)
         console.log(number/1000000000000000000)
       })
-    }
+    },
+    async addSmartChain() {
+      console.log('paso el conect')
+      const testnetBSC = [{
+        chainId: web3BSC.utils.toHex('97'),
+        chainName:'Smart Chain - Testnet',
+        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/',],
+        nativeCurrency: {
+          name: 'Binance Coin',
+          symbol: 'tBNB', 
+          decimals: 18,
+        },
+        blockExplorerUrls: ['https://testnet.bscscan.com',],
+      }]
+      console.log(testnetBSC)
+      await ethereum.request({ method: 'wallet_addEthereumChain', params: testnetBSC }).then(result => {
+        console.log(result)
+        this.$router.go(0)
+      })
+    },
   }
 };
 </script>
