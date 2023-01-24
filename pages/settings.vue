@@ -541,7 +541,7 @@ export default {
     getDataUser() {
       this.$axios.get(`${this.baseDomainUrl}/configuracion/${this.uid}`)
       .then(result => {
-        console.info(result.data) // console // <-- no me llega el estado de bloqueo de la cuenta y la foto de usuario tampoco 👈
+        console.info(result.data) // console // <-- no me llega el estado de bloqueo de la cuenta
 
         // set user data
         this.user = result.data.perfil

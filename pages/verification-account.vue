@@ -194,6 +194,7 @@ export default {
 
         // set data form
         this.$equalData(this.formIdentity, result.data)
+        this.formIdentity.tipoDocumento = this.formIdentity.tipoDocumento.toLowerCase()
 
         // enable download button if approved
         this.downloadBtn = result.data.aprobado
@@ -203,19 +204,25 @@ export default {
       if (!this.$refs.formIdentity.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
       this.loadingBtnIdentity = true
 
-      // post verification endpoint  // error al usar pasaporte, te pide que haya fotoReverso field <---------------- 👈
-      this.$axios.post(`${this.baseDomainUrl}/verificacion`, this.$formData({userId: this.uid, ...this.formIdentity}))
+      const data = {
+        userId: this.uid,
+        ...this.formIdentity
+      }
+      data.tipoDocumento = this.documentTypes.findIndex(doc => doc === data.tipoDocumento) + 1
+
+      this.$axios.post(`${this.baseDomainUrl}/verificacion`, this.$formData(data))
       .then(result => {
         console.info("<<--identity form-->>", result.data) // console
         this.loadingBtnIdentity = false
         
+        const timeout = 6700
+        setTimeout(() => this.$router.push(this.localePath("/profile")), timeout);
+        
         this.$alert("success", {
           title: "validacion exitosa",
           desc: "El proceso de validación puede tardar unos cuantos minutos o días",
-          timeout: 8000
+          timeout,
         })
-        this.$router.push(this.localePath("/profile"))
-        
       }).catch(err => {
         console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnIdentity = false
