@@ -449,7 +449,7 @@ export default {
         this.formRegister.patrocinador = result.data
         this.blockPartner = true
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.$alert("cancel", {desc: err.message})
       })
     },
@@ -472,12 +472,10 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.loadingBtnLogin = false
         this.$alert("cancel", {
-          desc: err.message === "Request failed with status code 400"
-          ? "username or password not founded"
-          : err.message
+          desc: err.response.data.errors.$[0]
         })
       })
     },
@@ -496,12 +494,10 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.loadingBtnRegister = false
         this.$alert("cancel", {
-          desc: err.message === "Request failed with status code 400"
-          ? "username or email alreay exist"
-          : err.message
+          desc: err.response.data.errors.$[0]
         })
       })
     },
@@ -521,7 +517,7 @@ export default {
         // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:recover"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.loadingBtnSendEmail = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -539,7 +535,7 @@ export default {
         this.$alert("success", {desc: "contraseña recuperada exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.loadingBtnRecover = false
         this.$alert("cancel", {desc: err.message})
       })

@@ -33,7 +33,7 @@
           <div class="divcol" style="gap: 10px">
             <div class="container-label">
               <label for="photo-document" class="aend">Foto de Documento
-                <span v-if="formIdentity.tipoDocumento !== 'Pasaporte'">(ambos lados)</span>
+                <span v-if="formIdentity.tipoDocumento !== 'pasaporte'">(ambos lados)</span>
               </label>
             </div>
             
@@ -57,7 +57,7 @@
               </v-file-input>
               
               <v-file-input
-                v-if="formIdentity.tipoDocumento !== 'Pasaporte'"
+                v-if="formIdentity.tipoDocumento !== 'pasaporte'"
                 id="photo-document"
                 v-model="formIdentity.fotoReverso"
                 solo hide-details

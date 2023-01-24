@@ -420,7 +420,7 @@
           :loading="loadingBtnFreezeAccount" @click="$confirmMsg({
             title: 'Congelar Cuenta',
             desc: '¿ Está seguro que desea congelar su cuenta ?',
-            fSuccess: () => freezeAccount()
+            fSuccess: () => true ? freezeAccount() : unfreezeAccount()
           })"
         >Congelar mi cuenta</v-btn>
       </v-card>
@@ -523,9 +523,9 @@ export default {
     onlyYear() {
       return Number(this.birthday_year?.split("-")[0]) || undefined
     },
-    // fullBirthday() {
-    //   return `${this.onlyDay}-${this.onlyMonth}-${this.onlyYear}`
-    // },
+    fullBirthday() {
+      return `${this.onlyYear}-${this.onlyMonth?.pad(2)}-${this.onlyDay}`
+    },
   },
   watch: {
     menuYear(val) {
@@ -549,10 +549,15 @@ export default {
         this.cuentaVerificada = result.data.cuentaVerificada
         this.walletAsociada = result.data.walletAsociada
         
+        this.formProfile.fechaNacimiento = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_day = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_month = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_year = result.data.informacionPersonal.fechaNacimiento
+        
         // set beneficiaries
         this.dataBeneficiaries = result.data.beneficiarios
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.$alert("cancel", {desc: err.message})
         if (err.message.includes("401")) localStorage.removeItem("auth")
         this.$router.go()
@@ -563,14 +568,8 @@ export default {
       this.loadingBtnProfile = true
 
       try {
-        if (this.birthday_day || this.birthday_month || this.birthday_year) {
-          this.formProfile.fechaNacimiento = {
-            year: this.onlyYear,
-            month: this.onlyMonth,
-            day: this.onlyDay,
-            dayOfWeek: this.onlyDay,
-          }
-        }
+        if (this.birthday_day && this.birthday_month && this.birthday_year) 
+          this.formProfile.fechaNacimiento = this.fullBirthday
         console.log("information data", this.formProfile) // error no reconoce formato de fecha <---------------- 👈
 
         // information endpoint
@@ -590,7 +589,7 @@ export default {
         this.loadingBtnProfile = false
         // this.$router.go()
       } catch(err) {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.$alert("cancel", {desc: err.message})
         this.loadingBtnProfile = false
       }
@@ -607,7 +606,7 @@ export default {
         this.$alert("success", {desc: "beneficiario guardado exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -630,7 +629,7 @@ export default {
         this.$alert("success", {desc: "beneficiario editado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -644,7 +643,7 @@ export default {
         this.$alert("success", {desc: "beneficiario eliimnado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -671,7 +670,7 @@ export default {
       this.loadingBtnFreezeAccount = true
 
       // freeze account endpoint
-      this.$axios.post(`${this.baseDomainUrl}/configuracion/bloquearCuenta`, {"userId": this.uid}) // error <---------------- 👈
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/bloquearCuenta`, {"userId": this.uid})
       .then(result => {
         console.info("<<--freeze account-->>", result.data) // console
         this.loadingBtnFreezeAccount = false
@@ -679,7 +678,24 @@ export default {
         this.$alert("success", {desc: "su cuenta ha sido congelada"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors)
+        this.loadingBtnFreezeAccount = false
+        this.$alert("cancel", {desc: err.message})
+      })
+    },
+    unfreezeAccount() {
+      this.loadingBtnFreezeAccount = true
+
+      // freeze account endpoint
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/desbloquearCuenta`, {"userId": this.uid})
+      .then(result => {
+        console.info("<<--unfreeze account-->>", result.data) // console
+        this.loadingBtnFreezeAccount = false
+        
+        this.$alert("success", {desc: "su cuenta ha sido descongelada"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err, err.response.data.errors)
         this.loadingBtnFreezeAccount = false
         this.$alert("cancel", {desc: err.message})
       })
