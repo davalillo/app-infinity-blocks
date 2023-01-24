@@ -420,7 +420,7 @@
           :loading="loadingBtnFreezeAccount" @click="$confirmMsg({
             title: 'Congelar Cuenta',
             desc: '¿ Está seguro que desea congelar su cuenta ?',
-            fSuccess: () => freezeAccount()
+            fSuccess: () => true ? freezeAccount() : unfreezeAccount()
           })"
         >Congelar mi cuenta</v-btn>
       </v-card>
@@ -523,9 +523,9 @@ export default {
     onlyYear() {
       return Number(this.birthday_year?.split("-")[0]) || undefined
     },
-    // fullBirthday() {
-    //   return `${this.onlyDay}-${this.onlyMonth}-${this.onlyYear}`
-    // },
+    fullBirthday() {
+      return `${this.onlyYear}-${this.onlyMonth?.pad(2)}-${this.onlyDay}`
+    },
   },
   watch: {
     menuYear(val) {
@@ -541,7 +541,7 @@ export default {
     getDataUser() {
       this.$axios.get(`${this.baseDomainUrl}/configuracion/${this.uid}`)
       .then(result => {
-        console.info(result.data) // console
+        console.info(result.data) // console // <-- no me llega el estado de bloqueo de la cuenta
 
         // set user data
         this.user = result.data.perfil
@@ -549,10 +549,15 @@ export default {
         this.cuentaVerificada = result.data.cuentaVerificada
         this.walletAsociada = result.data.walletAsociada
         
+        this.formProfile.fechaNacimiento = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_day = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_month = result.data.informacionPersonal.fechaNacimiento
+        this.birthday_year = result.data.informacionPersonal.fechaNacimiento
+        
         // set beneficiaries
         this.dataBeneficiaries = result.data.beneficiarios
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
         if (err.message.includes("401")) localStorage.removeItem("auth")
         this.$router.go()
@@ -560,32 +565,32 @@ export default {
     },
     async saveFormProfile() {
       if (!this.$refs.formProfile.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnProfile = true
 
       try {
-        if (this.birthday_day || this.birthday_month || this.birthday_year) {
-          this.formProfile.fechaNacimiento = {
-            year: this.onlyYear,
-            month: this.onlyMonth,
-            day: this.onlyDay,
-            dayOfWeek: this.onlyDay,
-          }
-        }
-        console.log("information data", this.formProfile) // error <---------------- 👈
+        if (this.birthday_day && this.birthday_month && this.birthday_year) 
+          this.formProfile.fechaNacimiento = this.fullBirthday
 
         // information endpoint
         await this.$axios.put(`${this.baseDomainUrl}/configuracion/informacion`, this.formProfile)
         .then(result => console.info("<<--information endpoint-->>", result)) // console
-        
-        console.log("photo utl", this.user.urlFotoPerfil) // error <---------------- 👈
+
         // photo endpoint
-        if (this.user.urlFotoPerfil) await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, this.user.urlFotoPerfil)
-        .then(result => console.info("<<--photo endpoint-->>", result)) // console
+        if (this.user.urlFotoPerfil) {
+          const file = new FormData
+          file.append("foto", this.user.urlFotoPerfil)
+
+          await this.$axios.put(`${this.baseDomainUrl}/configuracion/foto`, file)
+          .then(result => console.info("<<--photo endpoint-->>", result)) // console
+        }
         
         this.$alert("success", {desc: "datos guardados correctamente"})
+        this.loadingBtnProfile = false
         // this.$router.go()
       } catch(err) {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
+        this.loadingBtnProfile = false
       }
     },
     saveBeneficiary() {
@@ -600,7 +605,7 @@ export default {
         this.$alert("success", {desc: "beneficiario guardado exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -614,16 +619,17 @@ export default {
       this.formBeneficiaries = newItem
     },
     editBeneficiary() {
-      console.log(this.currentBeneficiaryEdit) // error <---------------- 👈
+      delete Object.assign(this.currentBeneficiaryEdit, { beneficiarioId: this.currentBeneficiaryEdit.id }).id
+      
       // edit beneficiary endpoint
-      this.$axios.put(`${this.baseDomainUrl}/configuracion/beneficiario/${this.currentBeneficiaryEdit.id}`)
+      this.$axios.put(`${this.baseDomainUrl}/configuracion/beneficiario`, this.currentBeneficiaryEdit)
       .then(result => {
         console.info("<<--edit beneficiary-->>", result.data) // console
         
         this.$alert("success", {desc: "beneficiario editado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -637,7 +643,7 @@ export default {
         this.$alert("success", {desc: "beneficiario eliimnado correctamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.addBeneficiariesState = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -664,7 +670,7 @@ export default {
       this.loadingBtnFreezeAccount = true
 
       // freeze account endpoint
-      this.$axios.post(`${this.baseDomainUrl}/configuracion/bloquearCuenta`, {"userId": this.uid}) // error <---------------- 👈
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/bloquearCuenta`, {"userId": this.uid})
       .then(result => {
         console.info("<<--freeze account-->>", result.data) // console
         this.loadingBtnFreezeAccount = false
@@ -672,7 +678,24 @@ export default {
         this.$alert("success", {desc: "su cuenta ha sido congelada"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
+        this.loadingBtnFreezeAccount = false
+        this.$alert("cancel", {desc: err.message})
+      })
+    },
+    unfreezeAccount() {
+      this.loadingBtnFreezeAccount = true
+
+      // freeze account endpoint
+      this.$axios.post(`${this.baseDomainUrl}/configuracion/desbloquearCuenta`, {"userId": this.uid})
+      .then(result => {
+        console.info("<<--unfreeze account-->>", result.data) // console
+        this.loadingBtnFreezeAccount = false
+        
+        this.$alert("success", {desc: "su cuenta ha sido descongelada"})
+        this.$router.go()
+      }).catch(err => {
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnFreezeAccount = false
         this.$alert("cancel", {desc: err.message})
       })

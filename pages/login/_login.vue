@@ -449,7 +449,7 @@ export default {
         this.formRegister.patrocinador = result.data
         this.blockPartner = true
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.$alert("cancel", {desc: err.message})
       })
     },
@@ -472,13 +472,10 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnLogin = false
-        this.$alert("cancel", {
-          desc: err.message === "Request failed with status code 400"
-          ? "username or password not founded"
-          : err.message
-        })
+        const errMessage = Object.keys(err.response.data.errors).map(key => err.response.data.errors[key][0]).join(", ")
+        this.$alert("cancel", {desc: errMessage})
       })
     },
     register() {
@@ -496,13 +493,10 @@ export default {
         this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:login"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnRegister = false
-        this.$alert("cancel", {
-          desc: err.message === "Request failed with status code 400"
-          ? "username or email alreay exist"
-          : err.message
-        })
+        const errMessage = Object.keys(err.response.data.errors).map(key => err.response.data.errors[key][0]).join(", ")
+        this.$alert("cancel", {desc: errMessage})
       })
     },
     sendEmail() {
@@ -518,10 +512,10 @@ export default {
         this.$store.commit("emailVerification", {...this.formSendEmail})
         
         // redirection to code validation
-        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:recover"))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnSendEmail = false
         this.$alert("cancel", {desc: err.message})
       })
@@ -539,7 +533,7 @@ export default {
         this.$alert("success", {desc: "contraseña recuperada exitosamente"})
         this.$router.go()
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnRecover = false
         this.$alert("cancel", {desc: err.message})
       })

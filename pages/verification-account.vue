@@ -33,7 +33,7 @@
           <div class="divcol" style="gap: 10px">
             <div class="container-label">
               <label for="photo-document" class="aend">Foto de Documento
-                <span v-if="formIdentity.tipoDocumento !== 'Pasaporte'">(ambos lados)</span>
+                <span v-if="formIdentity.tipoDocumento !== 'pasaporte'">(ambos lados)</span>
               </label>
             </div>
             
@@ -57,7 +57,7 @@
               </v-file-input>
               
               <v-file-input
-                v-if="formIdentity.tipoDocumento !== 'Pasaporte'"
+                v-if="formIdentity.tipoDocumento !== 'pasaporte'"
                 id="photo-document"
                 v-model="formIdentity.fotoReverso"
                 solo hide-details
@@ -194,30 +194,37 @@ export default {
 
         // set data form
         this.$equalData(this.formIdentity, result.data)
+        this.formIdentity.tipoDocumento = this.formIdentity.tipoDocumento.toLowerCase()
 
         // enable download button if approved
         this.downloadBtn = result.data.aprobado
-      }).catch(err => console.error(err))
+      }).catch(err => console.error(err, err.response.data.errors ?? err.response.data.title))
     },
     sendRequest() {
       if (!this.$refs.formIdentity.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
       this.loadingBtnIdentity = true
 
-      // post verification endpoint  // error al usar pasaporte, te pide que haya fotoReverso field <---------------- 👈
-      this.$axios.post(`${this.baseDomainUrl}/verificacion`, this.$formData({userId: this.uid, ...this.formIdentity}))
+      const data = {
+        userId: this.uid,
+        ...this.formIdentity
+      }
+      data.tipoDocumento = this.documentTypes.findIndex(doc => doc === data.tipoDocumento) + 1
+
+      this.$axios.post(`${this.baseDomainUrl}/verificacion`, this.$formData(data))
       .then(result => {
         console.info("<<--identity form-->>", result.data) // console
         this.loadingBtnIdentity = false
         
+        const timeout = 5000
+        setTimeout(() => this.$router.push(this.localePath("/profile")), timeout);
+        
         this.$alert("success", {
           title: "validacion exitosa",
           desc: "El proceso de validación puede tardar unos cuantos minutos o días",
-          timeout: 8000
+          timeout,
         })
-        this.$router.push(this.localePath("/profile"))
-        
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnIdentity = false
         this.$alert("cancel", {desc: err.message})
       })
