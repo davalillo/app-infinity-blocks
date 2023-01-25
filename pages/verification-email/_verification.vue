@@ -47,7 +47,7 @@
         <div class="divcol" style="gap: 1em;">
           <a
             class="hspan" style="text-decoration: underline; --fs: max(16px, 1.6em); --fw: 800"
-            @click="sendEmail()"
+            @click="params !== 'recover' ? sendEmailChangePassword() : sendEmail()"
           >Reenviar Código</a>
           <span class="hspan" style="opacity: .8; --fs: max(14px, 1.1em)">No olvides revisar tu bandeja de SPAM</span>
         </div>
@@ -92,18 +92,24 @@ export default {
   },
   methods: {
     sendEmail() {
-      if (this.params === "recover") {
-        this.$alert("cancel", {desc: "no implementado aun"})
-      } else {
-        // request token endpoint
-        this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarTokenCorreo`, {"email": this.email}).then(result => {
-          console.info(result.data) // console
-          this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
-        }).catch(err => {
-          console.error(err)
-          this.$alert("cancel", {desc: err.message})
-        })
-      }
+      // request token endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarTokenCorreo`, {"email": this.email}).then(result => {
+        console.info(result.data) // console
+        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+      }).catch(err => {
+        console.error(err, err.response.data.errors ?? err.response.data.title)
+        this.$alert("cancel", {desc: err.message})
+      })
+    },
+    sendEmailChangePassword() {
+      // request token endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarCambioPassword`, {"email": this.email}).then(result => {
+        console.info(result.data) // console
+        this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+      }).catch(err => {
+        console.error(err, err.response.data.errors ?? err.response.data.title)
+        this.$alert("cancel", {desc: err.message})
+      })
     },
     verificationCode() {
       if (!this.otp) return;
@@ -118,7 +124,7 @@ export default {
         // redirection to previous page
         this.$router.push(this.localePath(`/${this.params}`))
       }).catch(err => {
-        console.error(err)
+        console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnVerificationEmail = false
         this.$alert("cancel", {desc: err.message})
       })

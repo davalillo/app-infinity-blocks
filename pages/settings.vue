@@ -541,10 +541,12 @@ export default {
     getDataUser() {
       this.$axios.get(`${this.baseDomainUrl}/configuracion/${this.uid}`)
       .then(result => {
-        console.info(result.data) // console // <-- no me llega el estado de bloqueo de la cuenta
+        console.info(result.data) // console
 
         // set user data
         this.user = result.data.perfil
+        this.avatarImg = result.data.perfil.urlFotoPerfil
+        this.user.urlFotoPerfil = undefined
         this.$equalData(this.formProfile, result.data.informacionPersonal)
         this.cuentaVerificada = result.data.cuentaVerificada
         this.walletAsociada = result.data.walletAsociada

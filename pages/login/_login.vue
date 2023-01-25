@@ -351,14 +351,14 @@ export default {
   name: "LoginPage",
   mixins: [computeds],
   layout: "empty-layout",
-  asyncData({ from, store }) {
-    let windowStep = 1
-    if (from.params.verification?.includes(":recover") && store.state.currentEmailVerification.token) windowStep = 4
+  // asyncData({ from, store }) {
+  //   let windowStep = 1
+  //   if (from.params.verification?.includes(":recover") && store.state.currentEmailVerification.token) windowStep = 4
 
-    return {
-      windowStep
-    }
-  },
+  //   return {
+  //     windowStep
+  //   }
+  // },
   data() {
     return {
       windowStep: 1,
@@ -426,23 +426,29 @@ export default {
     }
   },
   computed: {
-    currToken() {
-      return this.$store.state.currentEmailVerification.token
+    params() {
+      return this.$route.params.login?.split(":")
     },
+    // currToken() {
+    //   return this.$store.state.currentEmailVerification.token
+    // },
   },
   mounted() {
     // this.$targetTooltip('.modalSettings img[alt="info"]')
     // window.addEventListener("resize", () => this.$targetTooltip('.modalSettings img[alt="info"]', 13))
 
+    // if authenticated
     if (JSON.parse(localStorage.getItem('auth'))) return this.$router.push(this.localePath('/profile'))
 
-    this.getPartnerCode()
+    // if have partnercode
+    if (this.params && this.params[1] === "partner") this.getPartnerCode()
+
+    // if have recover password token
+    if (this.params && this.params[1] === "recover") this.windowStep = 4
   },
   methods: {
     getPartnerCode() {// under construction <------------ 👇
-      if (!this.$route.params.login) return;
-
-      this.$axios.get(`${this.baseDomainUrl}/usuarios/patrocinador/${this.$route.params.login.split(":")[1]}`)
+      this.$axios.get(`${this.baseDomainUrl}/usuarios/patrocinador/${this.params[2]}`)
       .then(result => {
         console.info(result.data) // console
         this.windowStep = 2
@@ -525,7 +531,7 @@ export default {
       this.loadingBtnRecover = true
 
       // recover endpoint
-      this.$axios.post(`${this.baseDomainUrl}/usuarios/cambiarPassword`, {"token": this.currToken, ...this.formRecover})
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/cambiarPassword`, {"token": this.params[2], ...this.formRecover})
       .then(result => {
         console.info("<<--recover-->>", result.data) // console
         this.loadingBtnRecover = false
