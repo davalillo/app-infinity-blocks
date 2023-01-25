@@ -226,9 +226,9 @@
           </button>
 
           <v-form
-            ref="formSendEmail" class="card divcol"
+            ref="formSendEmailRecover" class="card divcol"
             style="--bg: var(--primary); --w: 100%; gap: 1em"
-            @submit.prevent="sendEmail()"
+            @submit.prevent="sendEmailRecover()"
           >
             <div class="divcol" style="gap: .5em">
               <label class="relative" for="recover-email">CORREO RECUPERACIÓN:
@@ -249,93 +249,20 @@
               </label>
               <v-text-field
                 id="recover-email"
-                v-model="formSendEmail.email"
+                v-model="formSendEmailRecover.email"
                 placeholder="Ingresa el correo de tu cuenta"
                 hide-details solo
                 :rules="rules.email"
-                @keyup="$event => $event.key === 'Enter' ? sendEmail() : ''"
+                @keyup="$event => $event.key === 'Enter' ? sendEmailRecover() : ''"
               ></v-text-field>
             </div>
             
             <v-btn
-              :disabled="!$refs.formSendEmail?.validate() || loadingBtnSendEmail"
+              :disabled="!$refs.formSendEmailRecover?.validate() || loadingBtnSendEmailRecover"
               class="btn align" style="--bg: var(--active)"
-              :loading="loadingBtnSendEmail"
-              @click="sendEmail()">
+              :loading="loadingBtnSendEmailRecover"
+              @click="sendEmailRecover()">
               Enviar correo
-            </v-btn>
-          </v-form>
-        </section>
-      </v-window-item>
-
-
-      <!-- recover window -->
-      <v-window-item id="login-window" :value="4">
-        <section>
-          <button class="mb-10" @click="$router.go()">
-            <img src="~/assets/sources/logos/logo-header.svg" alt="logo" style="--w: max(190px, 17em)">
-          </button>
-
-          <v-form
-            ref="formRecover" class="card divcol"
-            style="--bg: var(--primary); --w: 100%; gap: 1em"
-            @submit.prevent="recover()"
-          >
-            <div class="divcol" style="gap: .5em">
-              <label class="relative" for="password-recover">NUEVA CONTRASEÑA:
-                <v-tooltip top nudge-top="10px" color="#fff" content-class="custome-tooltip">
-                  <template #activator="{ on, attrs }">
-                    <img
-                      src="~/assets/sources/icons/warning-dark.svg" alt="tip" class="absolute"
-                      style="--w: max(16px, .9em); --l: auto; --top: auto; --b: -5px"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                  </template>
-                  
-                  <span>
-                    Debe incluir mayúsculas, minúsculas, números y mínimo 8 carácteres
-                  </span>
-                </v-tooltip>
-              </label>
-              <v-text-field
-                id="password-recover"
-                v-model="formRecover.password"
-                :type="showRecover ? 'text' : 'password'"
-                :rules="rules.password"
-                placeholder="Ingresa nueva contraseña"
-                hide-details solo
-                hide-spin-buttons
-                @keyup="$event => $event.key === 'Enter' ? recover() : ''"
-              >
-                <template #append>
-                  <v-icon size="1.3em" @click="showRecover = !showRecover">
-                    mdi-eye{{showRecover ? '' : '-off'}}
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </div>
-            
-            <div class="divcol" style="gap: .5em">
-              <label for="confirm-password-recover">CONFIRMAR CONTRASEÑA:</label>
-              <v-text-field
-                id="confirm-password-login"
-                v-model="passwordConfirmerRecover"
-                :type="showRecover ? 'text' : 'password'"
-                :rules="rules.confirmPasswordRecover"
-                placeholder="Confirma contraseña"
-                hide-details solo
-                hide-spin-buttons
-                @keyup="$event => $event.key === 'Enter' ? recover() : ''"
-              ></v-text-field>
-            </div>
-            
-            <v-btn
-              :disabled="!$refs.formRecover?.validate() || loadingBtnRecover"
-              class="btn align" style="--bg: var(--active)"
-              :loading="loadingBtnRecover"
-              @click="recover()">
-              Recuperar
             </v-btn>
           </v-form>
         </section>
@@ -378,11 +305,7 @@ export default {
       },
       blockPartner: false,
       passwordConfirmerRegister: undefined,
-      formRecover: {
-        password: undefined,
-      },
-      passwordConfirmerRecover: undefined,
-      formSendEmail: {
+      formSendEmailRecover: {
         email: undefined,
       },
       countryPhoneList: [
@@ -401,7 +324,6 @@ export default {
       ],
       showLogin: false,
       showRegister: false,
-      showRecover: false,
       rules: {
         confirmPasswordRegister: [
           (v) => !!v || "Field required",
@@ -415,8 +337,7 @@ export default {
       },
       loadingBtnLogin: false,
       loadingBtnRegister: false,
-      loadingBtnRecover: false,
-      loadingBtnSendEmail: false,
+      loadingBtnSendEmailRecover: false,
     }
   },
   head() {
@@ -441,14 +362,11 @@ export default {
     if (JSON.parse(localStorage.getItem('auth'))) return this.$router.push(this.localePath('/profile'))
 
     // if have partnercode
-    if (this.params && this.params[1] === "partner") this.getPartnerCode()
-
-    // if have recover password token
-    if (this.params && this.params[1] === "recover") this.windowStep = 4
+    if (this.params) this.getPartnerCode()
   },
   methods: {
     getPartnerCode() {// under construction <------------ 👇
-      this.$axios.get(`${this.baseDomainUrl}/usuarios/patrocinador/${this.params[2]}`)
+      this.$axios.get(`${this.baseDomainUrl}/usuarios/patrocinador/${this.params[1]}`)
       .then(result => {
         console.info(result.data) // console
         this.windowStep = 2
@@ -505,42 +423,24 @@ export default {
         this.$alert("cancel", {desc: errMessage})
       })
     },
-    sendEmail() {
-      if (!this.$refs.formSendEmail.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
-      this.loadingBtnSendEmail = true
+    sendEmailRecover() {
+      if (!this.$refs.formSendEmailRecover.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
+      this.loadingBtnSendEmailRecover = true
 
       // recover endpoint
-      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarCambioPassword`, {...this.formSendEmail})
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarCambioPassword`, {...this.formSendEmailRecover})
       .then(result => {
-        console.info("<<--send email-->>", result.data) // console
-        this.loadingBtnSendEmail = false
+        console.info("<<--send email recover-->>", result.data) // console
+        this.loadingBtnSendEmailRecover = false
         // storage current email
-        this.$store.commit("emailVerification", {...this.formSendEmail})
+        this.$store.commit("emailVerification", {...this.formSendEmailRecover})
         
         // redirection to code validation
         // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
         this.$router.push(this.localePath("/verification-email/:recover"))
       }).catch(err => {
         console.error(err, err.response.data.errors ?? err.response.data.title)
-        this.loadingBtnSendEmail = false
-        this.$alert("cancel", {desc: err.message})
-      })
-    },
-    recover() {
-      if (!this.$refs.formRecover.validate()) return this.$alert("cancel", {desc: "verifica que los campos sean correctos"});
-      this.loadingBtnRecover = true
-
-      // recover endpoint
-      this.$axios.post(`${this.baseDomainUrl}/usuarios/cambiarPassword`, {"token": this.params[2], ...this.formRecover})
-      .then(result => {
-        console.info("<<--recover-->>", result.data) // console
-        this.loadingBtnRecover = false
-        
-        this.$alert("success", {desc: "contraseña recuperada exitosamente"})
-        this.$router.go()
-      }).catch(err => {
-        console.error(err, err.response.data.errors ?? err.response.data.title)
-        this.loadingBtnRecover = false
+        this.loadingBtnSendEmailRecover = false
         this.$alert("cancel", {desc: err.message})
       })
     },

@@ -47,7 +47,7 @@
         <div class="divcol" style="gap: 1em;">
           <a
             class="hspan" style="text-decoration: underline; --fs: max(16px, 1.6em); --fw: 800"
-            @click="params !== 'recover' ? sendEmailChangePassword() : sendEmail()"
+            @click="params == 'recover' ? sendEmailChangePassword() : sendEmail()"
           >Reenviar Código</a>
           <span class="hspan" style="opacity: .8; --fs: max(14px, 1.1em)">No olvides revisar tu bandeja de SPAM</span>
         </div>
@@ -121,6 +121,9 @@ export default {
         this.loadingBtnVerificationEmail = false
         // set current verification
         this.$store.commit("emailVerification", {token: this.otp, email: this.email})
+        
+        this.$alert("success", {desc: "verificación exitosa"})
+        
         // redirection to previous page
         this.$router.push(this.localePath(`/${this.params}`))
       }).catch(err => {

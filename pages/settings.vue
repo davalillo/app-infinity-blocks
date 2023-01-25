@@ -410,8 +410,9 @@
       
       <v-card class="card divcol center" style="gap: 12px">
         <v-btn
+          :disabled="loadingBtnChangePassword"
           class="btn" style="--bg: var(--primary); --w: min(100%, 13em); --fw: 800"
-          @click="changePassword()"
+          :loading="loadingBtnChangePassword" @click="changePassword()"
         >Cambiar Contraseña</v-btn>
         
         <v-btn
@@ -504,6 +505,7 @@ export default {
       menuYear: false,
       loadingBtnProfile: false,
       loadingBtnBeneficiary: false,
+      loadingBtnChangePassword: false,
       loadingBtnFreezeAccount: false,
     }
   },
@@ -660,7 +662,24 @@ export default {
       this.formBeneficiaries.telefono.numero = undefined
     },
     changePassword() {
-      this.$router.push(this.localePath("/settings-password"))
+      this.loadingBtnChangePassword = true
+
+      // recover endpoint
+      this.$axios.post(`${this.baseDomainUrl}/usuarios/solicitarCambioPassword`, {email: this.user.email})
+      .then(result => {
+        console.info("<<--send email recover-->>", result.data) // console
+        this.loadingBtnSendEmailRecover = false
+        // storage current email
+        this.$store.commit("emailVerification", {email: this.user.email})
+        
+        // redirection to code validation
+        // this.$alert("success", {title: "Correo enviado", desc: "verifique su bandeja de entrada"})
+        this.$router.push(this.localePath("/verification-email/:recover"))
+      }).catch(err => {
+        console.error(err, err.response.data.errors ?? err.response.data.title)
+        this.loadingBtnChangePassword = false
+        this.$alert("cancel", {desc: err.message})
+      })
     },
     avatarPreview() {
       if (this.user.urlFotoPerfil) this.avatarImg = URL.createObjectURL(this.user.urlFotoPerfil)
@@ -677,15 +696,16 @@ export default {
         console.info("<<--freeze account-->>", result.data) // console
         this.loadingBtnFreezeAccount = false
         
+        localStorage.removeItem("auth")
         this.$alert("success", {desc: "su cuenta ha sido congelada"})
-        this.$router.go()
+        this.$router.push(this.localePath("/login"))
       }).catch(err => {
         console.error(err, err.response.data.errors ?? err.response.data.title)
         this.loadingBtnFreezeAccount = false
         this.$alert("cancel", {desc: err.message})
       })
     },
-    unfreezeAccount() {
+    unfreezeAccount() { // not available in front-end 👈
       this.loadingBtnFreezeAccount = true
 
       // freeze account endpoint

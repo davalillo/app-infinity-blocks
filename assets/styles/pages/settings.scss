@@ -94,19 +94,19 @@
   }
 
 
-  &.password {
-    .v-input {
-      --bg: var(--active);
+  // &.password {
+  //   .v-input {
+  //     --bg: var(--active);
       
-      &__prepend-outer {
-        margin-block: 0;
-        * {color: #fff !important}
-        input {display: none}
-        .v-input__append-inner {
-          padding: 0;
-          .v-icon {font-size: 1.1em}
-        }
-      }
-    }
-  }
+  //     &__prepend-outer {
+  //       margin-block: 0;
+  //       * {color: #fff !important}
+  //       input {display: none}
+  //       .v-input__append-inner {
+  //         padding: 0;
+  //         .v-icon {font-size: 1.1em}
+  //       }
+  //     }
+  //   }
+  // }
 }
